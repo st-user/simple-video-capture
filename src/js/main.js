@@ -1,5 +1,4 @@
 import CaptureControlModel from './video/CaptureControlModel.js';
-import { CaptureControlState } from './video/CaptureControlState.js';
 import CaptureControlView from './video/CaptureControlView.js';
 
 

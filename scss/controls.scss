@@ -1,7 +1,7 @@
 .controls {
     margin: auto;
-    max-width: 540px;
     margin-bottom: 24px;
+    max-width: 540px;
 
     &__buttons {
         margin-bottom: 24px;
@@ -26,7 +26,7 @@
         
 
         &.is-active {
-            background: linear-gradient(#AFC4BD 0%, #222625 100%);
+            background: linear-gradient(#afc4bd 0%, #222625 100%); /* stylelint-disable-line plugin/no-unsupported-browser-features */
             box-shadow: 0 1px 1px rgba(0, 0, 0, 0.28);
             color: #222625;
             font-weight: bold;
@@ -34,8 +34,8 @@
         }
 
         &.is-disabled {
-            background-color: #D4D9D7;
-            color: #B9BDBB;
+            background-color: #d4d9d7;
+            color: #b9bdbb;
             cursor: default;
         }
 
@@ -52,7 +52,7 @@
         animation-iteration-count: infinite;
         animation-name: controls__mark-now-capturing-pulse;
         animation-timing-function: linear;
-        background-color: #DB1A31;
+        background-color: #db1a31;
         border-radius: 50%;
         float: left;
         height: 24px;
@@ -64,9 +64,11 @@
         0% {
             opacity: 1;
         }
+
         50% {
             opacity: 0.7;
         }
+
         100% {
             opacity: 1;
         }
@@ -88,8 +90,8 @@
     }
 
     &__option-title {
-        width: 148px;
         float: left;
+        width: 148px;
     }
 
     &__option-value {

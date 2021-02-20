@@ -7,7 +7,7 @@ const PREVIEW_AREA_PADDING = 12;
 const PREVIEW_AREA_VIDEO_INFO_HEIGHT = 24;
 const videoInfoTemplate = data => {
     return `
-        ▼プレビュー [実サイズ：${data.width}x${data.height}]
+        ▼録画対象 [実サイズ：${data.width}x${data.height}]
     `;
 };
 
@@ -64,7 +64,7 @@ export default class CaptureControlView {
                 this.#$videoWidth.value,
                 this.#$videoHeight.value
             );
-        }
+        };
         DOM.change(this.#$videoSizeSelection, changeVideoSize);
 
         const changeVideoLength = () => {
@@ -117,6 +117,7 @@ export default class CaptureControlView {
     #renderVideo() {
         if (this.#$video) {
             this.#$video.remove();
+            this.#$video = undefined;
         }
         if (!this.#captureControlModel.getStream()) {
             DOM.none(this.#$previewArea);

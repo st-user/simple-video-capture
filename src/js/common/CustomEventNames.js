@@ -30,10 +30,4 @@ CustomEventNames
 
 ;
 
-CustomEventContextNames
-    .set('START', 'start')
-    .set('END', 'end')
-;
-
-
 export { CustomEventNames, CustomEventContextNames };

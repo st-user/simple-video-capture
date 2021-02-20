@@ -1,5 +1,5 @@
-import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 import { CustomEventNames } from '../common/CustomEventNames.js';
+import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 
 export default class VideoHandler {
 
@@ -75,7 +75,7 @@ export default class VideoHandler {
         }
         let constraint = this.#defaultSettings[0];
         if (0 < width && 0 < height) {
-          constraint = { width, height };  
+            constraint = { width, height };  
         }
         this.#stream.getTracks().forEach(t => {
             t.applyConstraints(constraint);

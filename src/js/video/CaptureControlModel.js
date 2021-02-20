@@ -1,13 +1,14 @@
 import { CaptureControlState, VideoSizeDef } from './CaptureControlState.js';
-import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 import { CustomEventNames } from '../common/CustomEventNames.js';
+import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
+import VideoHandler from './VideoHandler.js';
 import { 
     checkAll, 
     checkIfInputValueEmpty, 
     checkIfInputValueMatchesRegExp,
     checkIfIntegerGreaterEqual
 } from '../common/InputCheck.js';
-import VideoHandler from './VideoHandler.js';
+
 
 const sizeRegExp = /^\d+$/;
 const sizeEmptyErrorMessage = '動画サイズを入力してください';
@@ -74,7 +75,7 @@ export default class CaptureControlModel {
     changeVideoSize(selectedVideoSize, width, height) {
         this.#errorMessage = '';
         this.#selectedVideoSize = selectedVideoSize;
-        this.setVideoSize(width, height)
+        this.setVideoSize(width, height);
     }
 
     setVideoSize(width, height) {
