@@ -1,0 +1,56 @@
+
+.header {
+    width: 100%;
+    margin-bottom: 24px;
+
+    &__content {
+        margin: auto;
+        max-width: 482px;
+        position: relative;
+    }
+
+    &__logo {
+        background-image: url('../assets/logo.png');
+        background-size: contain;
+        float: left;
+        height: 32px;
+        margin: 16px 32px 0 0;
+        width: 32px;
+        
+    }
+
+    &__title {
+        float: left;
+        font-size: 32px;
+        height: 64px;
+        line-height: 2;
+        text-align: center;
+    }
+
+    &__logo:hover {
+        animation-duration: 1s;
+        animation-name: header__logo-animation;
+    }
+
+    @keyframes header__logo-animation {
+        0% {
+            transform: scale(1);
+        }
+
+        25% {
+            transform: scale(0.8);
+        }
+
+        50% {
+            transform: scale(1);
+        }
+
+        75% {
+            transform: scale(0.8);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+}

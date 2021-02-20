@@ -1,0 +1,106 @@
+.controls {
+    margin: auto;
+    max-width: 540px;
+    margin-bottom: 24px;
+
+    &__buttons {
+        margin-bottom: 24px;
+    }
+
+    &__button-li {
+        float: left;
+        height: 50px;
+        margin-right: 12px;
+    }
+
+    &__button {
+        border-radius: 5px;
+        display: inline-block;
+        font-size: 18px;
+        height: 50px;
+        line-height: 50px;
+        overflow: hidden;
+        text-align: center;
+        text-decoration: none;
+        width: 120px;
+        
+
+        &.is-active {
+            background: linear-gradient(#AFC4BD 0%, #222625 100%);
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.28);
+            color: #222625;
+            font-weight: bold;
+            text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.66);
+        }
+
+        &.is-disabled {
+            background-color: #D4D9D7;
+            color: #B9BDBB;
+            cursor: default;
+        }
+
+    }
+
+    &__button:hover {
+        &.is-active {
+            opacity: 0.7;
+        }
+    }
+
+    &__mark-now-capturing {
+        animation-duration: 2s;
+        animation-iteration-count: infinite;
+        animation-name: controls__mark-now-capturing-pulse;
+        animation-timing-function: linear;
+        background-color: #DB1A31;
+        border-radius: 50%;
+        float: left;
+        height: 24px;
+        margin: 13px 3px 0 0;
+        width: 24px;
+    }
+
+    @keyframes controls__mark-now-capturing-pulse {
+        0% {
+            opacity: 1;
+        }
+        50% {
+            opacity: 0.7;
+        }
+        100% {
+            opacity: 1;
+        }
+    }
+
+    &__text-now-capturing {
+        float: left;
+        line-height: 50px;
+    }
+
+    &__error-message-area {
+        color: #6e101b;
+        height: 24px;
+        line-height: 24px;
+    }
+
+    &__options-li {
+        margin-bottom: 12px;
+    }
+
+    &__option-title {
+        width: 148px;
+        float: left;
+    }
+
+    &__option-value {
+        float: left;
+    }
+
+    &__option-video-size {
+        width: 60px;
+    }
+
+    &__option-value-detail {
+        padding-top: 6px;
+    }
+}
