@@ -101,7 +101,7 @@ export default class CaptureControlView {
         });
 
         CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__VIDEO_SIZE_CHANGE, () => {
-            this.#resizeVideo();
+            this.#resizeVideoWidthDelay();
             this.#renderControls();
         });
 
@@ -137,6 +137,10 @@ export default class CaptureControlView {
         this.#$video = $video;
         this.#$previewArea.appendChild($video);
 
+        this.#resizeVideoWidthDelay();
+    }
+
+    #resizeVideoWidthDelay() {
         setTimeout(() => this.#resizeVideo(), 300);
     }
 
