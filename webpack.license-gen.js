@@ -2,6 +2,7 @@ const { merge } = require('webpack-merge');
 const common = require('./webpack.common.js');
 const LicensePlugin = require('webpack-license-plugin');
 const path = require('path');
+const packageInfo = require('./package.json');
 
 const PROJECT_NAME = packageInfo.name;
 
