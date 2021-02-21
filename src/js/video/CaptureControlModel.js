@@ -44,14 +44,11 @@ export default class CaptureControlModel {
         if (this.isPreviewBtnDisabled()) {
             return;
         }
-        this.#selectedVideoSize = VIDEO_SIZE_DEFAULT;
-        this.#videoWidth = 0;
-        this.#videoHeight = 0;
+        this.#resetVideoSizeSelection();
 
-        const canCapture = await this.#videoHandler.preview(this.#videoWidth, this.#videoHeight);
-        if (canCapture) {
+        await this.#videoHandler.preview(this.#videoWidth, this.#videoHeight, () => {
             this.#state = CaptureControlState.READY_TO_CAPTURE;
-        }
+        });
     }
 
     captureStart() {
@@ -71,6 +68,7 @@ export default class CaptureControlModel {
         if (this.isCaptureEndBtnDisabled()) {
             return;
         }
+        this.#resetVideoSizeSelection();
         this.#state = CaptureControlState.BEFORE_PREVIEW;
         this.#videoHandler.stopCapturing();
     }
@@ -145,7 +143,7 @@ export default class CaptureControlModel {
     }
 
     isVideoSizeSelectionDisabled() {
-        return this.#state === CaptureControlState.CAPTURING;
+        return this.#state !== CaptureControlState.READY_TO_CAPTURE;
     }
 
     isVideoLengthSelectionDisabled() {
@@ -166,6 +164,12 @@ export default class CaptureControlModel {
 
     getVideoSetting() {
         return this.#videoHandler.getVideoSetting();
+    }
+
+    #resetVideoSizeSelection() {
+        this.#selectedVideoSize = VIDEO_SIZE_DEFAULT;
+        this.#videoWidth = 0;
+        this.#videoHeight = 0;
     }
 
     #notifyStateChange() {

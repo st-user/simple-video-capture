@@ -10,7 +10,7 @@ export default class VideoHandler {
     #defaultSettings;
     #mediaRecorder;
 
-    async preview(width, height) {
+    async preview(width, height, beforeEvent) {
         try {
             this.#defaultSettings = undefined;
             if (this.#stream) {
@@ -38,6 +38,7 @@ export default class VideoHandler {
                 }
                 this.#defaultSettings = settings
                 await this.setSize(width, height);
+                beforeEvent();
                 CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW);
             };
             await setDefaultSettings();
@@ -45,6 +46,7 @@ export default class VideoHandler {
                 t.addEventListener('ended', () => this.#endTrack());
             });
         } catch (e) {
+            alert('画面の撮影(共有)がキャンセルされました。または、画面の共有がブロックされている可能性があります。');
             console.error(e);
             return false;
         }

@@ -95,6 +95,7 @@ export default class CaptureControlView {
 
         CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING, () => {
             this.#captureControlModel.resetState();
+            this.#resetVideoSizeSelection();
             this.#renderVideo();
             this.#renderControls();
         });
