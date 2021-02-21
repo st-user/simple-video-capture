@@ -6,5 +6,9 @@
 
     &__li {
         margin-bottom: 6px;
+
+        &.is-important {
+            color: #66202C;
+        }
     }
 }

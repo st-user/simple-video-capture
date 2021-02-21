@@ -1,10 +1,13 @@
 import { CustomEventNames } from '../common/CustomEventNames.js';
 import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 
+const SET_DEFAULT_SETTINGS_RETRY_MAX_COUNT = 20;
+const SET_DEFAULT_SETTINGS_RETRY_INTERVAL = 50;
+
 export default class VideoHandler {
 
     #stream;
-    #defaultSettings = [];
+    #defaultSettings;
     #mediaRecorder;
 
     async preview(width, height) {
@@ -13,7 +16,25 @@ export default class VideoHandler {
                 audio: false,
                 video: true
             });
-            this.#defaultSettings = [ ...this.#stream.getTracks().map(t => t.getSettings()) ];
+            let retryCount = 0;
+            const setDefaultSettings = () => {
+                if (!this.#stream) {
+                    return;
+                }
+                const settings = this.#stream.getTracks().map(t => t.getSettings())[0];
+                if (!settings.width || !settings.height) {
+                    if (SET_DEFAULT_SETTINGS_RETRY_MAX_COUNT <= retryCount) {
+                        console.warn(`Can not get default settings and has retried more than ${SET_DEFAULT_SETTINGS_RETRY_MAX_COUNT} times.`, settings);
+                        return;
+                    }
+                    console.warn(`Can not get default settings`, settings);
+                    retryCount++;
+                    setTimeout(setDefaultSettings, SET_DEFAULT_SETTINGS_RETRY_INTERVAL);
+                    return;
+                }
+                this.#defaultSettings = settings
+            };
+            setDefaultSettings();
             this.#stream.getTracks().forEach(t => {
                 t.addEventListener('ended', () => this.#endTrack());
             });
@@ -33,7 +54,14 @@ export default class VideoHandler {
         let timer;
         this.#mediaRecorder.onstop = () => {
 
+            if (!this.#stream) {
+                chunks.length = 0;
+                clearTimeout(timer);
+                return;
+            }
+
             const blob = new Blob(chunks, { 'type': 'video/webm' });
+            chunks.length = 0;
                     
             const anchor = document.createElement('a');
             const objectURL = URL.createObjectURL(blob);
@@ -73,17 +101,13 @@ export default class VideoHandler {
         if (!this.#stream) {
             return;
         }
-        let constraint = this.#defaultSettings[0];
-        if ((width <= 0 || height <= 0) && (constraint.width <= 0 || constraint.height <= 0)) {
+        let constraint = this.#defaultSettings;
+        if ((width <= 0 || height <= 0) && (!constraint || constraint.width <= 0 || constraint.height <= 0)) {
             return;
         }
 
         if (0 < width && 0 < height) {
-            constraint = { width: {
-                min: width, max: width, ideal: width
-            }, height: {
-                min: height, max: height, ideal: height
-            } };  
+            constraint = { height, width };
         }
         return Promise.all(this.#stream.getTracks().map(t => t.applyConstraints(constraint)));
     }
