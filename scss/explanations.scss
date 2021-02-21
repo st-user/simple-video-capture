@@ -1,0 +1,14 @@
+.explanations {
+    list-style: disc;
+    margin: auto;
+    max-width: 960px;
+    padding: 0 24px;
+
+    &__li {
+        margin-bottom: 6px;
+
+        &.is-important {
+            color: #66202C;
+        }
+    }
+}

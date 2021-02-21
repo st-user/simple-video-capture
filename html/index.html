@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="utf-8">
+        <meta name="keywords" content="video,動画,ビデオ,キャプチャー,録画,ブラウザ" />
+        <meta name="description" content="任意のアプリケーション、モニターなどの操作を録画できるツールです。録画した動画はwebm形式でダウンロードできます。" />
+        <link rel="shortcut icon" href="favicon.ico">
+        <title>簡単動画キャプチャーツール</title>
+        <script src="./js/style.js?q=1.0.0"></script>
+    </head>
+
+    <body>
+
+        <header class="header">
+            <div class="header__content clearfixContainer">
+                <div class="header__logo"></div>
+                <h1 class="header__title">簡単動画キャプチャーツール</h1>
+            </div>         
+        </header>
+
+        <!-- controls -->
+        <div class="controls">
+            <ul class="controls__buttons clearfixContainer">
+                <li class="controls__button-li">
+                    <a href="#" id="preview" class="controls__button">プレビュー</a>
+                </li>
+                <li class="controls__button-li">
+                    <a href="#" id="captureStart" class="controls__button">録画開始</a>
+                </li>
+                <li class="controls__button-li">
+                    <a href="#" id="captureEnd" class="controls__button">録画終了</a>
+                </li>
+                <li id="nowCapturing" class="controls__button-li clearfixContainer">
+                    <div class="controls__mark-now-capturing"></div>
+                    <div class="controls__text-now-capturing">録画中</div>
+                </li>
+            </ul>
+            <div id="errorMessageArea" class="controls__error-message-area"></div>
+            <ul class="controls__options">
+                <!-- expected size -->
+                <li class="controls__options-li clearfixContainer">
+                    <div class="controls__option-title">
+                        動画サイズの目安(*):
+                    </div>
+                    <div class="controls__option-value">
+                        <div>
+                            <select name="videoSizeSelection" id="videoSizeSelection">
+                                <option value="default">デフォルト</option>
+                                <option value="2k">2k(2560x1440)</option>
+                                <option value="fullHd">Full HD (1920x1080)</option>
+                                <option value="hd">HD (1280x720)</option>
+                                <option value="arbitrary">自分で指定する</option>
+                             </select>
+                        </div>
+                        <div id="videoSizeInputArea" class="controls__option-value-detail">
+                            &gt;
+                            <input type="text" name="videoWidth" id="videoWidth" class="controls__option-video-size"/>(横)
+                            x
+                            <input type="text" name="videoHeight" id="videoHeight" class="controls__option-video-size"/>(縦)
+                        </div>
+                    </div>
+                </li>
+
+                <!-- video length -->
+                <li class="controls__options-li clearfixContainer">
+                    <div class="controls__option-title">
+                        動画の時間の長さ:
+                    </div>
+                    <div class="controls__option-value">
+                        <select name="videoLengthSelection" id="videoLengthSelection">
+                            <option value="0">指定なし</option>
+                            <option value="10">10秒</option>
+                            <option value="30">30秒</option>
+                            <option value="60">1分</option>
+                        </select>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        <!-- explanation -->
+        <ul class="explanations">
+            <li class="explanations__li">任意のアプリケーション、モニターなどの操作を録画できるツールです。</li>
+            <li class="explanations__li">2021/2現在、Safariでは、全画面の録画のみ可能です。</li>
+            <li class="explanations__li">録画した動画はwebm形式でダウンロードできます。</li>
+            <li class="explanations__li">処理は端末上で完結するため、動画データがインターネット上に送信されることはありません。</li>
+            <li class="explanations__li is-important">(*)動画サイズに関する機能はβ版です。動画サイズの目安を選択できますが、実際に生成される動画のサイズは端末、ブラウザ、録画対象に依存します。サイト製作者が試した限りでは、「拡大、縮小はできるがアスペクト比は変わらない」「アスペクト比は変わるが、幅または高さは維持される」などのケースが多かったです。</li>
+            <li class="explanations__li">動画の時間が長くなると、ブラウザが大量のメモリを消費します。あまり長い時間の録画はしないことをおすすめします。</li>
+            <li class="explanations__li">動画の時間の長さを指定した場合でも、厳密に指定した秒数にはならず、1秒程度ずれることもあります。</li>
+            <li class="explanations__li">ブラウザは、Google Chrome, Firefox, Microsoft Edge(Chromium版), Safariを使用してください。</li>
+            <li class="explanations__li">ソースコード、不具合報告など→<a target="_blank" rel="noopener noreferrer" href=""></a></li>
+        </ul>
+        <div id="previewArea" class="preview">
+            <div id="videoInfo" class="preview__video-info"></div>
+        </div>
+
+        <script>
+            var APP_VERSION = '1.0.0';
+            (function() {
+                var SCRIPT_SRC = './js/main.js?q=' + APP_VERSION;
+                var $script = document.createElement('script');
+                $script.src = SCRIPT_SRC;
+                document.body.appendChild($script);
+            })();
+        </script>
+    </body>
+</html>
