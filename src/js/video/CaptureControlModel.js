@@ -72,13 +72,13 @@ export default class CaptureControlModel {
         this.#videoHandler.stopCapturing();
     }
 
-    changeVideoSize(selectedVideoSize, width, height) {
+    async changeVideoSize(selectedVideoSize, width, height) {
         this.#errorMessage = '';
         this.#selectedVideoSize = selectedVideoSize;
-        this.setVideoSize(width, height);
+        await this.setVideoSize(width, height);
     }
 
-    setVideoSize(width, height) {
+    async setVideoSize(width, height) {
         this.#errorMessage = '';
         const selectedVideoSize = this.#selectedVideoSize;
 
@@ -115,7 +115,7 @@ export default class CaptureControlModel {
             this.#videoHeight = VideoSizeDef[selectedVideoSize].height;
         }
         if (!this.#errorMessage) {
-            this.#videoHandler.setSize(this.#videoWidth, this.#videoHeight);
+            await this.#videoHandler.setSize(this.#videoWidth, this.#videoHeight);
         }
         this.#notifyStateChange();
         CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__VIDEO_SIZE_CHANGE);

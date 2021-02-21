@@ -1,3 +1,3 @@
 import main from './js/main.js';
 
-main();
+window.addEventListener('load', async () => main());

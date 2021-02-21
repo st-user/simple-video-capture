@@ -5,6 +5,8 @@ import debounce from '../common/Debounce.js';
 
 const PREVIEW_AREA_PADDING = 12;
 const PREVIEW_AREA_VIDEO_INFO_HEIGHT = 24;
+const RESIZE_VIDEO_RETRY_MAX_COUNT = 100;
+
 const videoInfoTemplate = data => {
     return `
         ▼録画対象 [実サイズ：${data.width}x${data.height}]
@@ -52,14 +54,14 @@ export default class CaptureControlView {
         this.#$videoLengthSelection = DOM.query('#videoLengthSelection');
     }
 
-    setUpEvent() {
+    async setUpEvent() {
 
-        DOM.click(this.#$preview, async () => this.#captureControlModel.preview());
+        DOM.click(this.#$preview, async () => await this.#captureControlModel.preview());
         DOM.click(this.#$captureStart, () => this.#captureControlModel.captureStart());
         DOM.click(this.#$captureEnd, () => this.#captureControlModel.captureEnd());
 
-        const changeVideoSize = () => {
-            this.#captureControlModel.changeVideoSize(
+        const changeVideoSize = async () => {
+            await this.#captureControlModel.changeVideoSize(
                 DOM.optionValue(this.#$videoSizeSelection),
                 this.#$videoWidth.value,
                 this.#$videoHeight.value
@@ -74,8 +76,8 @@ export default class CaptureControlView {
         };
         DOM.change(this.#$videoLengthSelection, changeVideoLength);
 
-        DOM.change([ this.#$videoWidth, this.#$videoHeight ], () => {
-            this.#captureControlModel.setVideoSize(
+        DOM.change([ this.#$videoWidth, this.#$videoHeight ], async () => {
+            await this.#captureControlModel.setVideoSize(
                 this.#$videoWidth.value, this.#$videoHeight.value
             );
         });
@@ -108,7 +110,7 @@ export default class CaptureControlView {
             this.#resizeVideo();
         }, 500));
 
-        changeVideoSize();
+        await changeVideoSize();
         changeVideoLength();
         this.#renderVideo();
         this.#renderControls();
@@ -136,31 +138,52 @@ export default class CaptureControlView {
     }
 
     #resizeVideo() {
+
         if (!this.#$video || !this.#$previewArea) {
             return;
         }
-        
-        const videoSetting = this.#captureControlModel.getVideoSetting();
-        const origAreaClientWidth = window.innerWidth * 0.90;
-        const origVideoWidth = videoSetting.width;
-        const origVideoWithPadding = origVideoWidth + PREVIEW_AREA_PADDING;
 
-        const applyAspectRatio = width => {
-            return width * (1 / videoSetting.aspectRatio);
-        };
-        const areaWidth = Math.min(origVideoWithPadding, origAreaClientWidth);
-        const videoWidth = areaWidth - PREVIEW_AREA_PADDING;
-        const videoHeight = applyAspectRatio(videoWidth);
-        const adjustedAreaWidth = Math.max(areaWidth, 270);
-        const adjustedAreaHeight = applyAspectRatio(adjustedAreaWidth - PREVIEW_AREA_PADDING) + PREVIEW_AREA_PADDING + PREVIEW_AREA_VIDEO_INFO_HEIGHT;
+        let retryCount = 0;
+        const _resizeVideo = () => {
+            const videoSetting = this.#captureControlModel.getVideoSetting();
+            if (!videoSetting) {
+                return;
+            }
 
-        this.#$video.width = videoWidth;
-        this.#$video.height = videoHeight;
-        this.#$previewArea.style.width = `${adjustedAreaWidth}px`;
-        this.#$previewArea.style.height = `${adjustedAreaHeight}px`;
-        this.#$videoInfo.textContent = videoInfoTemplate({
-            width: videoSetting.width, height: videoSetting.height
-        });
+            if (!videoSetting.width || !videoSetting.height) {
+                if (RESIZE_VIDEO_RETRY_MAX_COUNT <= retryCount) {
+                    console.warn(`Can not get video size and has retried more than ${RESIZE_VIDEO_RETRY_MAX_COUNT} times.`, videoSetting);
+                    return;
+                }
+                console.warn(`Can not get video size`, videoSetting);
+                retryCount++;
+                setTimeout(_resizeVideo, 10);
+                return;
+            }
+
+            const origAreaClientWidth = window.innerWidth * 0.90;
+            const origVideoWidth = videoSetting.width;
+            const origVideoWithPadding = origVideoWidth + PREVIEW_AREA_PADDING;
+    
+            const applyAspectRatio = width => {
+                const aspectRatio = videoSetting.aspectRatio || videoSetting.width / videoSetting.height;
+                return width * (1 / aspectRatio);
+            };
+            const areaWidth = Math.min(origVideoWithPadding, origAreaClientWidth);
+            const videoWidth = areaWidth - PREVIEW_AREA_PADDING;
+            const videoHeight = applyAspectRatio(videoWidth);
+            const adjustedAreaWidth = Math.max(areaWidth, 270);
+            const adjustedAreaHeight = applyAspectRatio(adjustedAreaWidth - PREVIEW_AREA_PADDING) + PREVIEW_AREA_PADDING + PREVIEW_AREA_VIDEO_INFO_HEIGHT;
+    
+            this.#$video.width = videoWidth;
+            this.#$video.height = videoHeight;
+            this.#$previewArea.style.width = `${adjustedAreaWidth}px`;
+            this.#$previewArea.style.height = `${adjustedAreaHeight}px`;
+            this.#$videoInfo.textContent = videoInfoTemplate({
+                width: videoSetting.width, height: videoSetting.height
+            });
+        }
+        _resizeVideo();
     }
 
     #renderControls() {

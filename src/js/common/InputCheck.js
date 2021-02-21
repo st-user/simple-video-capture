@@ -21,7 +21,7 @@ const checkAll = (inputValue, checkers) => {
 };
 
 const checkIfIntegerGreaterEqual = (value, errorMsg) => {
-    return inputValue => value < parseInt(inputValue, 10) ? '' : errorMsg;
+    return inputValue => value <= parseInt(inputValue, 10) ? '' : errorMsg;
 };
 
 export {

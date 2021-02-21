@@ -14,11 +14,14 @@ export default class VideoHandler {
                 video: true
             });
             this.#defaultSettings = [ ...this.#stream.getTracks().map(t => t.getSettings()) ];
+            this.#stream.getTracks().forEach(t => {
+                t.addEventListener('ended', () => this.#endTrack());
+            });
         } catch (e) {
             console.error(e);
             return false;
         }
-        this.setSize(width, height);
+        await this.setSize(width, height);
         return true;
     }
 
@@ -39,13 +42,10 @@ export default class VideoHandler {
             anchor.click();
             URL.revokeObjectURL(objectURL);
     
-            this.#stream.getTracks().forEach(t => t.stop());
-            
-            this.#stream = undefined;
-            this.#mediaRecorder = undefined;
+            this.#stream.getTracks().forEach(t => t.stop());           
             clearTimeout(timer);
 
-            CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING);
+            this.#endTrack();
         };
     
         this.#mediaRecorder.ondataavailable = event => {
@@ -74,12 +74,18 @@ export default class VideoHandler {
             return;
         }
         let constraint = this.#defaultSettings[0];
-        if (0 < width && 0 < height) {
-            constraint = { width, height };  
+        if ((width <= 0 || height <= 0) && (constraint.width <= 0 || constraint.height <= 0)) {
+            return;
         }
-        this.#stream.getTracks().forEach(t => {
-            t.applyConstraints(constraint);
-        });
+
+        if (0 < width && 0 < height) {
+            constraint = { width: {
+                min: width, max: width, ideal: width
+            }, height: {
+                min: height, max: height, ideal: height
+            } };  
+        }
+        return Promise.all(this.#stream.getTracks().map(t => t.applyConstraints(constraint)));
     }
 
     getStream() {
@@ -90,6 +96,14 @@ export default class VideoHandler {
         if (!this.#stream) {
             return undefined;
         }
-        return this.#stream.getTracks().map(t => t.getSettings())[0];
+        return this.#stream.getTracks().map(t => {
+            return t.getSettings();
+        })[0];
+    }
+
+    #endTrack() {
+        this.#stream = undefined;
+        this.#mediaRecorder = undefined;
+        CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING);
     }
 }
