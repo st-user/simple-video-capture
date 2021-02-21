@@ -31,12 +31,12 @@ export default class VideoHandler {
                         console.warn(`Can not get default settings and has retried more than ${SET_DEFAULT_SETTINGS_RETRY_MAX_COUNT} times.`, settings);
                         return;
                     }
-                    console.warn(`Can not get default settings`, settings);
+                    console.warn('Can not get default settings', settings);
                     retryCount++;
                     setTimeout(async () => await setDefaultSettings(), SET_DEFAULT_SETTINGS_RETRY_INTERVAL);
                     return;
                 }
-                this.#defaultSettings = settings
+                this.#defaultSettings = settings;
                 await this.setSize(width, height);
                 beforeEvent();
                 CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW);

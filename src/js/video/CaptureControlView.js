@@ -158,14 +158,14 @@ export default class CaptureControlView {
                     console.warn(`Can not get video size and has retried more than ${RESIZE_VIDEO_RETRY_MAX_COUNT} times.`, videoSetting);
                     return;
                 }
-                console.warn(`Can not get video size`, videoSetting);
+                console.warn('Can not get video size', videoSetting);
                 retryCount++;
                 setTimeout(_resizeVideo, RESIZE_VIDEO_RETRY_INTERVAL);
                 return;
             }
             this.#resizeVideoInternal(videoSetting);
 
-        }
+        };
         _resizeVideo();
     }
 
