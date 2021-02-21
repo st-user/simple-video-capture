@@ -10,7 +10,7 @@ const RESIZE_VIDEO_RETRY_INTERVAL = 50;
 
 const videoInfoTemplate = data => {
     return `
-        ▼録画対象 [サイズ：${data.width}x${data.height}]
+        ▼録画対象 [サイズ(*)：${data.width}x${data.height}]
     `;
 };
 
@@ -84,6 +84,7 @@ export default class CaptureControlView {
         });
     
         CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW, () => {
+            this.#resetVideoSizeSelection();
             this.#renderVideo();
             this.#renderControls();
         });
@@ -115,23 +116,6 @@ export default class CaptureControlView {
         changeVideoLength();
         this.#renderVideo();
         this.#renderControls();
-
-        let currentSettig;
-        const adjustVideoSize = () => {
-            const videoSetting = this.#captureControlModel.getVideoSetting();
-            if (!videoSetting) {
-                setTimeout(adjustVideoSize, 1000);
-                return;
-            }
-
-            if (!currentSettig || currentSettig.width !== videoSetting.width || currentSettig.height !== videoSetting.height) {
-                this.#resizeVideoInternal(videoSetting);
-            }
-            currentSettig = videoSetting;
-            setTimeout(adjustVideoSize, 1000);
-                        
-        };
-        adjustVideoSize();
     }
 
     #renderVideo() {
@@ -152,7 +136,7 @@ export default class CaptureControlView {
         this.#$video = $video;
         this.#$previewArea.appendChild($video);
 
-        this.#resizeVideo();
+        setTimeout(() => this.#resizeVideo(), 300);
     }
 
     #resizeVideo() {
@@ -174,7 +158,6 @@ export default class CaptureControlView {
                 setTimeout(_resizeVideo, RESIZE_VIDEO_RETRY_INTERVAL);
                 return;
             }
-
             this.#resizeVideoInternal(videoSetting);
 
         }
@@ -241,6 +224,12 @@ export default class CaptureControlView {
         }
 
         this.#$errorMessageArea.textContent = this.#captureControlModel.getErrorMessage();
+    }
+
+    #resetVideoSizeSelection() {
+        this.#$videoSizeSelection.value = 'default';
+        this.#$videoWidth.value = '';
+        this.#$videoHeight.value = '';
     }
 
     #disableButton($button, isDisabled) {

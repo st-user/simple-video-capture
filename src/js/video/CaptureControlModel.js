@@ -14,7 +14,7 @@ const sizeRegExp = /^\d+$/;
 const sizeEmptyErrorMessage = '動画サイズを入力してください';
 const sizeFormatErrorMessage = '動画サイズは1以上の整数で入力してください';
 
-const VIDEO_SIZE_AUTO = 'auto';
+const VIDEO_SIZE_DEFAULT = 'default';
 const VIDEO_SIZE_ARBITRARY = 'arbitrary';
 
 export default class CaptureControlModel {
@@ -32,7 +32,7 @@ export default class CaptureControlModel {
 
     constructor() {
         this.#state = CaptureControlState.BEFORE_PREVIEW;
-        this.#selectedVideoSize = VIDEO_SIZE_AUTO;
+        this.#selectedVideoSize = VIDEO_SIZE_DEFAULT;
         this.#videoWidth = 0;
         this.#videoHeight = 0;
         this.#videoLength = 0;
@@ -44,10 +44,13 @@ export default class CaptureControlModel {
         if (this.isPreviewBtnDisabled()) {
             return;
         }
+        this.#selectedVideoSize = VIDEO_SIZE_DEFAULT;
+        this.#videoWidth = 0;
+        this.#videoHeight = 0;
+
         const canCapture = await this.#videoHandler.preview(this.#videoWidth, this.#videoHeight);
         if (canCapture) {
             this.#state = CaptureControlState.READY_TO_CAPTURE;
-            CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW);
         }
     }
 
@@ -83,7 +86,7 @@ export default class CaptureControlModel {
         const selectedVideoSize = this.#selectedVideoSize;
 
         switch(selectedVideoSize) {
-        case VIDEO_SIZE_AUTO:
+        case VIDEO_SIZE_DEFAULT:
             this.#videoWidth = 0;
             this.#videoHeight = 0;
             break;

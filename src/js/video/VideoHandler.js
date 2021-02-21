@@ -12,12 +12,16 @@ export default class VideoHandler {
 
     async preview(width, height) {
         try {
+            this.#defaultSettings = undefined;
+            if (this.#stream) {
+                this.#stream.getTracks().forEach(t => t.stop());
+            }
             this.#stream = await navigator.mediaDevices.getDisplayMedia({
                 audio: false,
                 video: true
             });
             let retryCount = 0;
-            const setDefaultSettings = () => {
+            const setDefaultSettings = async () => {
                 if (!this.#stream) {
                     return;
                 }
@@ -29,12 +33,14 @@ export default class VideoHandler {
                     }
                     console.warn(`Can not get default settings`, settings);
                     retryCount++;
-                    setTimeout(setDefaultSettings, SET_DEFAULT_SETTINGS_RETRY_INTERVAL);
+                    setTimeout(async () => await setDefaultSettings(), SET_DEFAULT_SETTINGS_RETRY_INTERVAL);
                     return;
                 }
                 this.#defaultSettings = settings
+                await this.setSize(width, height);
+                CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW);
             };
-            setDefaultSettings();
+            await setDefaultSettings();
             this.#stream.getTracks().forEach(t => {
                 t.addEventListener('ended', () => this.#endTrack());
             });
@@ -42,7 +48,6 @@ export default class VideoHandler {
             console.error(e);
             return false;
         }
-        await this.setSize(width, height);
         return true;
     }
 
@@ -109,7 +114,9 @@ export default class VideoHandler {
         if (0 < width && 0 < height) {
             constraint = { height, width };
         }
-        return Promise.all(this.#stream.getTracks().map(t => t.applyConstraints(constraint)));
+        return Promise.all(this.#stream.getTracks().map(t =>{
+            return t.applyConstraints(constraint);
+        }));
     }
 
     getStream() {
