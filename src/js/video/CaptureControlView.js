@@ -49,7 +49,7 @@ export default class CaptureControlView {
         this.#$videoLengthSelection = DOM.query('#videoLengthSelection');
     }
 
-    async setUpEvent() {
+    setUpEvent() {
 
         DOM.click(this.#$preview, async () => {
             DOM.none(this.#$previewArea);
@@ -58,8 +58,8 @@ export default class CaptureControlView {
         DOM.click(this.#$captureStart, () => this.#captureControlModel.captureStart());
         DOM.click(this.#$captureEnd, () => this.#captureControlModel.captureEnd());
 
-        const changeVideoSize = async () => {
-            await this.#captureControlModel.changeVideoSize(
+        const changeVideoSize = () => {
+            this.#captureControlModel.changeVideoSize(
                 DOM.optionValue(this.#$videoSizeSelection),
                 this.#$videoWidth.value,
                 this.#$videoHeight.value
@@ -74,8 +74,8 @@ export default class CaptureControlView {
         };
         DOM.change(this.#$videoLengthSelection, changeVideoLength);
 
-        DOM.change([ this.#$videoWidth, this.#$videoHeight ], async () => {
-            await this.#captureControlModel.setVideoSize(
+        DOM.change([ this.#$videoWidth, this.#$videoHeight ], () => {
+            this.#captureControlModel.setVideoSize(
                 this.#$videoWidth.value, this.#$videoHeight.value
             );
         });
@@ -110,7 +110,7 @@ export default class CaptureControlView {
             this.#resizeVideo();
         }, 500));
 
-        await changeVideoSize();
+        changeVideoSize();
         changeVideoLength();
         this.#renderVideo();
         this.#renderControls();

@@ -79,13 +79,13 @@ export default class CaptureControlModel {
         this.#videoHandler.stopCapturing();
     }
 
-    async changeVideoSize(selectedVideoSize, width, height) {
+    changeVideoSize(selectedVideoSize, width, height) {
         this.#errorMessage = '';
         this.#selectedVideoSize = selectedVideoSize;
-        await this.setVideoSize(width, height);
+        this.setVideoSize(width, height);
     }
 
-    async setVideoSize(width, height) {
+    setVideoSize(width, height) {
         this.#errorMessage = '';
         const selectedVideoSize = this.#selectedVideoSize;
 

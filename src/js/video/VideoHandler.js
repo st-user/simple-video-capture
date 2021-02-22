@@ -186,15 +186,13 @@ export default class VideoHandler {
         this.#mediaRecorder.ondataavailable = event => {
             chunks.push(event.data);
         };
+        this.#mediaRecorder.start();
 
         if (0 < lengthSecond) {
             timer = setTimeout(() => {
                 this.#mediaRecorder.stop();
             }, lengthSecond * 1000);
         }
-
-        this.#mediaRecorder.start();
-
     }
 
     stopCapturing() {
