@@ -8,15 +8,17 @@ export default class VideoHandler {
     #origStream;
     #mediaRecorder;
     #resizeTimer;
+    #startRendering;
 
     #$baseVideo;
     #$videoCanvas;
 
     #drawImageParams;
 
-    async preview(userInputWidth, userInputHeight) {
+    async preview(userInputSizeSupplier) {
         try {
             this.#drawImageParams = undefined;
+            this.#startRendering = false;
             if (this.#origStream) {
                 this.#origStream.getTracks().forEach(t => t.stop());
             }
@@ -46,13 +48,14 @@ export default class VideoHandler {
             clearTimeout(this.#resizeTimer);
             checkSourceStreamTrackResized();
             this.#$videoCanvas = document.createElement('canvas');
-
+            this.#startRendering = true;
             this.#$baseVideo.addEventListener('loadedmetadata', () => {
                 
-                this.adjustVideoCanvasSize(userInputWidth, userInputHeight);
+                this.adjustVideoCanvasSize(userInputSizeSupplier.width(), userInputSizeSupplier.height());
 
                 const render = () => {
-                    if (this.#drawImage()) {
+                    if (this.#startRendering) {
+                        this.#drawImage();
                         requestAnimationFrame(render);
                     }
                 };
@@ -63,6 +66,7 @@ export default class VideoHandler {
 
 
         } catch (e) {
+            this.#endTrack();
             alert('画面の撮影(共有)がキャンセルされました。または、画面の共有がブロックされている可能性があります。');
             console.error(e);
             return false;
@@ -216,6 +220,7 @@ export default class VideoHandler {
             this.#$videoCanvas.remove();
             this.#$videoCanvas = undefined;
         }
+        this.#startRendering = false;
         this.#drawImageParams = undefined;
         CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING);
     }

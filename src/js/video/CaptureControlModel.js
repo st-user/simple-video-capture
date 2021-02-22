@@ -44,8 +44,12 @@ export default class CaptureControlModel {
         if (this.isPreviewBtnDisabled()) {
             return;
         }
+        this.#state = CaptureControlState.BEFORE_PREVIEW;
         this.#resetVideoSizeSelection();
-        const canCapture = await this.#videoHandler.preview(this.#videoWidth, this.#videoHeight);
+        const canCapture = await this.#videoHandler.preview({
+            width: () => this.#videoWidth,
+            height: () => this.#videoHeight
+        });
 
         if (canCapture) {
             this.#state = CaptureControlState.READY_TO_CAPTURE;
