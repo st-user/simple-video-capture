@@ -5,7 +5,7 @@ import debounce from '../common/Debounce.js';
 
 const videoInfoTemplate = data => {
     return `
-        ▼録画対象 [サイズ(*)：${data.width}x${data.height}]
+        ▼録画対象 [サイズ：${data.width}x${data.height}]
     `;
 };
 
