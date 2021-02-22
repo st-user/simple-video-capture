@@ -1,50 +1,67 @@
 import { CustomEventNames } from '../common/CustomEventNames.js';
 import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 
-const SET_DEFAULT_SETTINGS_RETRY_MAX_COUNT = 20;
-const SET_DEFAULT_SETTINGS_RETRY_INTERVAL = 50;
+const CHECH_IF_SOURCE_STREAM_TRACK_RESIZED_INTERVAL = 300;
 
 export default class VideoHandler {
 
-    #stream;
-    #defaultSettings;
+    #origStream;
     #mediaRecorder;
+    #resizeTimer;
 
-    async preview(width, height, beforeEvent) {
+    #$baseVideo;
+    #$videoCanvas;
+
+    #drawImageParams;
+
+    async preview(userInputWidth, userInputHeight) {
         try {
-            this.#defaultSettings = undefined;
-            if (this.#stream) {
-                this.#stream.getTracks().forEach(t => t.stop());
+            this.#drawImageParams = undefined;
+            if (this.#origStream) {
+                this.#origStream.getTracks().forEach(t => t.stop());
             }
-            this.#stream = await navigator.mediaDevices.getDisplayMedia({
+            this.#origStream = await navigator.mediaDevices.getDisplayMedia({
                 audio: false,
                 video: true
             });
-            let retryCount = 0;
-            const setDefaultSettings = async () => {
-                if (!this.#stream) {
-                    return;
-                }
-                const settings = this.#stream.getTracks().map(t => t.getSettings())[0];
-                if (!settings.width || !settings.height) {
-                    if (SET_DEFAULT_SETTINGS_RETRY_MAX_COUNT <= retryCount) {
-                        console.warn(`Can not get default settings and has retried more than ${SET_DEFAULT_SETTINGS_RETRY_MAX_COUNT} times.`, settings);
-                        return;
-                    }
-                    console.warn('Can not get default settings', settings);
-                    retryCount++;
-                    setTimeout(async () => await setDefaultSettings(), SET_DEFAULT_SETTINGS_RETRY_INTERVAL);
-                    return;
-                }
-                this.#defaultSettings = settings;
-                await this.setSize(width, height);
-                beforeEvent();
-                CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW);
-            };
-            await setDefaultSettings();
-            this.#stream.getTracks().forEach(t => {
+            let currentSetting = this.#origStream.getTracks()[0].getSettings();
+
+            this.#origStream.getTracks().forEach(t => {
                 t.addEventListener('ended', () => this.#endTrack());
             });
+
+            this.#$baseVideo = document.createElement('video');
+            this.#$baseVideo.autoplay = true;
+            this.#$baseVideo.playsinline = false;
+            this.#$baseVideo.srcObject = this.#origStream;
+            
+            const checkSourceStreamTrackResized = () => {
+                const _currentSettings = this.#origStream.getTracks()[0].getSettings();
+                if(currentSetting.width !== _currentSettings.width || currentSetting.height !== _currentSettings.height) {
+                    this.#$baseVideo.srcObject = this.#origStream;
+                }
+                currentSetting = _currentSettings;
+                this.#resizeTimer = setTimeout(checkSourceStreamTrackResized, CHECH_IF_SOURCE_STREAM_TRACK_RESIZED_INTERVAL);
+            };
+            clearTimeout(this.#resizeTimer);
+            checkSourceStreamTrackResized();
+            this.#$videoCanvas = document.createElement('canvas');
+
+            this.#$baseVideo.addEventListener('loadedmetadata', () => {
+                
+                this.adjustVideoCanvasSize(userInputWidth, userInputHeight);
+
+                const render = () => {
+                    if (this.#drawImage()) {
+                        requestAnimationFrame(render);
+                    }
+                };
+                render();
+
+                CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__VIDEO_SIZE_CHANGE);
+            });
+
+
         } catch (e) {
             alert('画面の撮影(共有)がキャンセルされました。または、画面の共有がブロックされている可能性があります。');
             console.error(e);
@@ -53,15 +70,94 @@ export default class VideoHandler {
         return true;
     }
 
+    adjustVideoCanvasSize(_userInputWidth, _userInputHeight) {
+        if (!this.#$baseVideo || !this.#$videoCanvas) {
+            return;
+        }
+        const videoWidth = this.#$baseVideo.videoWidth;
+        const videoHeight = this.#$baseVideo.videoHeight;
+        const canvasWidth = this.#$videoCanvas.width;
+        const canvasHeight = this.#$videoCanvas.height;
+        const _size = this.getVideoActualSize(_userInputWidth, _userInputHeight);
+        const userInputWidth = _size.width;
+        const userInputHeight = _size.height;
+
+        // e.g. 2k screen 2560 x 1440
+        const origAspectRatio = videoWidth / videoHeight;
+
+        const userAspectRatio = userInputWidth / userInputHeight;
+
+        let videoFillWidth = this.#$videoCanvas.width;
+        let videoFillHeight = this.#$videoCanvas.height;
+        let xPadding = 0;
+        let yPadding = 0;
+
+        if (origAspectRatio < userAspectRatio) {
+            // too large width. e.g. 1200 x 600
+
+            videoFillWidth = (canvasHeight / videoHeight) * videoWidth;
+            xPadding =  (canvasWidth - videoFillWidth) / 2;
+    
+            // console.log(`${canvasWidth}/${canvasHeight}/${videoFillWidth}/${xPadding}   -- ${videoFillWidth + xPadding * 2}`);
+    
+        } 
+
+        if (userAspectRatio < origAspectRatio) {
+            // too large height. e.g. 600 x 600
+
+            videoFillHeight = (canvasWidth / videoWidth) * videoHeight;
+            yPadding =  (canvasHeight - videoFillHeight) / 2;
+    
+            // console.log(`${canvasHeight}/${canvasWidth}/${videoFillHeight}/${yPadding}   -- ${videoFillHeight + yPadding * 2}`);
+        }
+
+        this.#drawImageParams = {
+            xPadding, yPadding, videoFillWidth, videoFillHeight
+        };
+        
+        const displayWidth = Math.min(window.innerWidth * 0.90, userInputWidth);
+        const displayHeight = displayWidth * userInputHeight / userInputWidth;
+
+        this.#$videoCanvas.width = userInputWidth;
+        this.#$videoCanvas.height = userInputHeight;
+        this.#$videoCanvas.style.width = `${displayWidth}px`;
+        this.#$videoCanvas.style.height = `${displayHeight}px`;
+    }
+
+    getVideoActualSize(_userInputWidth, _userInputHeight) {
+        if (!this.#$baseVideo) {
+            return;
+        }
+        const videoWidth = this.#$baseVideo.videoWidth;
+        const videoHeight = this.#$baseVideo.videoHeight;
+        const width = !_userInputWidth ? videoWidth : _userInputWidth;
+        const height = !_userInputHeight ? videoHeight : _userInputHeight;
+
+        return { width, height };
+    }
+
+    #drawImage() {
+        if (!this.#$baseVideo || !this.#$videoCanvas || !this.#drawImageParams) {
+            return false;
+        }
+        const { xPadding, yPadding, videoFillWidth, videoFillHeight } = this.#drawImageParams;
+        const ctx = this.#$videoCanvas.getContext('2d');
+        ctx.fillColor = '#000000';
+        ctx.fillRect(0, 0, this.#$videoCanvas.width, this.#$videoCanvas.height);
+        ctx.drawImage(this.#$baseVideo, xPadding, yPadding, videoFillWidth, videoFillHeight);
+
+        return true;
+    }
+
     startCapturing(lengthSecond) {
      
-        this.#mediaRecorder = new MediaRecorder(this.#stream);
+        this.#mediaRecorder = new MediaRecorder(this.#$videoCanvas.captureStream());
 
         const chunks = [];
         let timer;
         this.#mediaRecorder.onstop = () => {
 
-            if (!this.#stream) {
+            if (!this.#origStream) {
                 chunks.length = 0;
                 clearTimeout(timer);
                 return;
@@ -77,7 +173,7 @@ export default class VideoHandler {
             anchor.click();
             URL.revokeObjectURL(objectURL);
     
-            this.#stream.getTracks().forEach(t => t.stop());           
+            this.#origStream.getTracks().forEach(t => t.stop());           
             clearTimeout(timer);
 
             this.#endTrack();
@@ -104,39 +200,23 @@ export default class VideoHandler {
         this.#mediaRecorder.stop();
     }
 
-    setSize(width, height) {
-        if (!this.#stream) {
-            return;
-        }
-        let constraint = this.#defaultSettings;
-        if ((width <= 0 || height <= 0) && (!constraint || constraint.width <= 0 || constraint.height <= 0)) {
-            return;
-        }
-
-        if (0 < width && 0 < height) {
-            constraint = { height, width };
-        }
-        return Promise.all(this.#stream.getTracks().map(t =>{
-            return t.applyConstraints(constraint);
-        }));
-    }
-
-    getStream() {
-        return this.#stream;
-    }
-
-    getVideoSetting() {
-        if (!this.#stream) {
-            return undefined;
-        }
-        return this.#stream.getTracks().map(t => {
-            return t.getSettings();
-        })[0];
+    getVideoCanvas() {
+        return this.#$videoCanvas;
     }
 
     #endTrack() {
-        this.#stream = undefined;
+        clearTimeout(this.#resizeTimer);
+        this.#origStream = undefined;
         this.#mediaRecorder = undefined;
+        if(this.#$baseVideo) {
+            this.#$baseVideo.remove();
+            this.#$baseVideo = undefined;
+        }
+        if(this.#$videoCanvas) {
+            this.#$videoCanvas.remove();
+            this.#$videoCanvas = undefined;
+        }
+        this.#drawImageParams = undefined;
         CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING);
     }
 }

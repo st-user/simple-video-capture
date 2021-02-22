@@ -45,10 +45,12 @@ export default class CaptureControlModel {
             return;
         }
         this.#resetVideoSizeSelection();
+        const canCapture = await this.#videoHandler.preview(this.#videoWidth, this.#videoHeight);
 
-        await this.#videoHandler.preview(this.#videoWidth, this.#videoHeight, () => {
+        if (canCapture) {
             this.#state = CaptureControlState.READY_TO_CAPTURE;
-        });
+            CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW);
+        }
     }
 
     captureStart() {
@@ -115,11 +117,21 @@ export default class CaptureControlModel {
             this.#videoWidth = VideoSizeDef[selectedVideoSize].width;
             this.#videoHeight = VideoSizeDef[selectedVideoSize].height;
         }
+
         if (!this.#errorMessage) {
-            await this.#videoHandler.setSize(this.#videoWidth, this.#videoHeight);
+            this.adjustVideoCanvasSize();
         }
+
         this.#notifyStateChange();
         CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__VIDEO_SIZE_CHANGE);
+    }
+
+    adjustVideoCanvasSize() {
+        this.#videoHandler.adjustVideoCanvasSize(this.#videoWidth, this.#videoHeight);
+    }
+
+    getVideoActualSize() {
+        return this.#videoHandler.getVideoActualSize(this.#videoWidth, this.#videoHeight);
     }
 
     setVideoLength(videoLength) {
@@ -158,12 +170,8 @@ export default class CaptureControlModel {
         return this.#errorMessage;
     }
 
-    getStream() {
-        return this.#videoHandler.getStream();
-    }
-
-    getVideoSetting() {
-        return this.#videoHandler.getVideoSetting();
+    getVideoCanvas() {
+        return this.#videoHandler.getVideoCanvas();
     }
 
     #resetVideoSizeSelection() {
