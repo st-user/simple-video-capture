@@ -1,8 +1,21 @@
 .explanations {
-    list-style: disc;
     margin: auto;
     max-width: 960px;
     padding: 0 24px;
+
+    &__toggle {
+        cursor: pointer;
+        font-size: 12px;
+        font-weight: bold;
+        height: 24px;
+        line-height: 24px;
+        text-decoration: underline;
+        width: 100px;
+    }    
+
+    &__contents {
+        list-style: disc;
+    }
 
     &__li {
         margin-bottom: 6px;

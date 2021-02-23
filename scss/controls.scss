@@ -4,7 +4,7 @@
     max-width: 540px;
 
     &__buttons {
-        margin-bottom: 24px;
+        margin-bottom: 12px;
     }
 
     &__button-li {
@@ -79,10 +79,18 @@
         line-height: 50px;
     }
 
-    &__error-message-area {
-        color: #6e101b;
-        height: 24px;
-        line-height: 24px;
+    &__message-area {
+        margin-bottom: 12px;
+        padding-bottom: 4px;
+        padding-top: 4px;
+
+        &.is-error {
+            color: #6e101b;
+        }
+
+        &.is-remark {
+            font-weight: bold;
+        }
     }
 
     &__options-li {

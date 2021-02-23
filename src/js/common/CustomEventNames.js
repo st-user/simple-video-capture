@@ -27,6 +27,7 @@ CustomEventNames
     .set('SIMPLE_VIDEO_CAPTURE__START_PREVIEW', 'simple-video-capture/start-preview')
     .set('SIMPLE_VIDEO_CAPTURE__START_CAPTURING', 'simple-video-capture/start-capturing')
     .set('SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING', 'simple-video-capture/stop-capturing')
+    .set('SIMPLE_VIDEO_CAPTURE__TOGGLE_EXPLANATIONS', 'simple-video-capture/toggle-explanations')
 
 ;
 

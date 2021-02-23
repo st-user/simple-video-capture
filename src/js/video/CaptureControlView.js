@@ -9,9 +9,19 @@ const videoInfoTemplate = data => {
     `;
 };
 
+const MESSAGE_TYPE = {
+    error: {
+        styleClass: 'is-error'
+    },
+    remark: {
+        styleClass: 'is-remark'
+    }
+};
+
 export default class CaptureControlView {
 
     #captureControlModel;
+    #explanationsModel;
 
     #$preview;
     #$captureStart;
@@ -21,7 +31,7 @@ export default class CaptureControlView {
     #$previewArea;
     #$videoInfo;
 
-    #$errorMessageArea;
+    #$messageArea;
     #$videoSizeSelection;
     #$videoSizeInputArea;
     #$videoWidth;
@@ -29,8 +39,9 @@ export default class CaptureControlView {
 
     #$videoLengthSelection;
 
-    constructor(caputureControlModel) {
+    constructor(caputureControlModel, explanationsModel) {
         this.#captureControlModel = caputureControlModel;
+        this.#explanationsModel = explanationsModel;
 
         this.#$preview = DOM.query('#preview');
         this.#$captureStart = DOM.query('#captureStart');
@@ -40,7 +51,7 @@ export default class CaptureControlView {
         this.#$previewArea = DOM.query('#previewArea');
         this.#$videoInfo = DOM.query('#videoInfo');
 
-        this.#$errorMessageArea = DOM.query('#errorMessageArea');
+        this.#$messageArea = DOM.query('#messageArea');
         this.#$videoSizeSelection = DOM.query('#videoSizeSelection');
         this.#$videoSizeInputArea = DOM.query('#videoSizeInputArea');
         this.#$videoWidth = DOM.query('#videoWidth');
@@ -53,6 +64,7 @@ export default class CaptureControlView {
 
         DOM.click(this.#$preview, async event => {
             event.preventDefault();
+            this.#explanationsModel.changeState(false);
             DOM.none(this.#$previewArea);
             await this.#captureControlModel.preview();
         });
@@ -171,7 +183,7 @@ export default class CaptureControlView {
             DOM.none(this.#$nowCapturing);
         }
 
-        this.#$errorMessageArea.textContent = this.#captureControlModel.getErrorMessage();
+        this.#renderMessageArea();
     }
 
     #resetVideoSizeSelection() {
@@ -189,6 +201,25 @@ export default class CaptureControlView {
         } else {
             $button.classList.add('is-active');
         }
-        
+    }
+
+    #renderMessageArea() {
+
+        let message = this.#captureControlModel.isCapturing() ? '録画中は、ブラウザウィンドウを最小化したり、別のタブを選択しないでください。' : '';
+        let messageStyleClass = !message ? '' : MESSAGE_TYPE.remark.styleClass;
+        const errorMessage = this.#captureControlModel.getErrorMessage();
+        if (errorMessage) {
+            message = errorMessage;
+            messageStyleClass = MESSAGE_TYPE.error.styleClass;
+        }
+
+        for (const key in MESSAGE_TYPE) {
+            this.#$messageArea.classList.remove(MESSAGE_TYPE[key].styleClass);    
+        }
+
+        if (messageStyleClass) {
+            this.#$messageArea.classList.add(messageStyleClass);
+        }
+        this.#$messageArea.textContent = message;
     }
 }

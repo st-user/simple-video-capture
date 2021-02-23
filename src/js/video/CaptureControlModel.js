@@ -68,6 +68,7 @@ export default class CaptureControlModel {
 
     resetState() {
         this.#state = CaptureControlState.BEFORE_PREVIEW;
+        this.#resetVideoSizeSelection();
     }
 
     captureEnd() {
@@ -182,6 +183,7 @@ export default class CaptureControlModel {
         this.#selectedVideoSize = VIDEO_SIZE_DEFAULT;
         this.#videoWidth = 0;
         this.#videoHeight = 0;
+        this.#errorMessage = '';
     }
 
     #notifyStateChange() {
