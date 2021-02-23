@@ -8,17 +8,17 @@ const PROJECT_NAME = packageInfo.name;
 
 module.exports = merge(common, {
     entry: {
-      'license-gen': './license-gen/index.js'
+        'license-gen': './license-gen/index.js'
     },
     output: {
-      path: path.resolve(__dirname, 'dist-discard/'),
+        path: path.resolve(__dirname, 'dist-discard/'),
     },
     plugins: [
-      new LicensePlugin({
-          excludedPackageTest: (packageName, version) => {
-              return false;
-          },
-          outputFilename: `../dist/${PROJECT_NAME}/oss-licenses.json`
-      })
+        new LicensePlugin({
+            excludedPackageTest: (packageName, version) => {
+                return false;
+            },
+            outputFilename: `../dist/${PROJECT_NAME}/oss-licenses.json`
+        })
     ]
 });
