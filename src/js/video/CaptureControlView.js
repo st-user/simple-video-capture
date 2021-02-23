@@ -51,12 +51,19 @@ export default class CaptureControlView {
 
     setUpEvent() {
 
-        DOM.click(this.#$preview, async () => {
+        DOM.click(this.#$preview, async event => {
+            event.preventDefault();
             DOM.none(this.#$previewArea);
             await this.#captureControlModel.preview();
         });
-        DOM.click(this.#$captureStart, () => this.#captureControlModel.captureStart());
-        DOM.click(this.#$captureEnd, () => this.#captureControlModel.captureEnd());
+        DOM.click(this.#$captureStart, event => {
+            event.preventDefault();
+            this.#captureControlModel.captureStart();
+        });
+        DOM.click(this.#$captureEnd, event => {
+            event.preventDefault();
+            this.#captureControlModel.captureEnd();
+        });
 
         const changeVideoSize = () => {
             this.#captureControlModel.changeVideoSize(
