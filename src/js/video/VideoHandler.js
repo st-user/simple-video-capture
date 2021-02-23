@@ -8,17 +8,16 @@ export default class VideoHandler {
     #origStream;
     #mediaRecorder;
     #resizeTimer;
-    #startRendering;
+    #requestAnimationFrameId;
 
     #$baseVideo;
     #$videoCanvas;
 
     #drawImageParams;
-
+    
     async preview(userInputSizeSupplier) {
         try {
             this.#drawImageParams = undefined;
-            this.#startRendering = false;
             if (this.#origStream) {
                 this.#origStream.getTracks().forEach(t => t.stop());
             }
@@ -47,18 +46,16 @@ export default class VideoHandler {
             };
             clearTimeout(this.#resizeTimer);
             checkSourceStreamTrackResized();
-            this.#$videoCanvas = document.createElement('canvas');
-            this.#startRendering = true;
+
+            this.#$videoCanvas = document.createElement('canvas');           
             this.#$baseVideo.addEventListener('loadedmetadata', () => {
                 
                 this.adjustVideoCanvasSize(userInputSizeSupplier.width(), userInputSizeSupplier.height());
-
                 const render = () => {
-                    if (this.#startRendering) {
-                        this.#drawImage();
-                        requestAnimationFrame(render);
-                    }
+                    this.#drawImage();
+                    this.#requestAnimationFrameId = requestAnimationFrame(render);
                 };
+                cancelAnimationFrame(this.#requestAnimationFrameId);
                 render();
 
                 CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__VIDEO_SIZE_CHANGE);
@@ -218,7 +215,7 @@ export default class VideoHandler {
             this.#$videoCanvas.remove();
             this.#$videoCanvas = undefined;
         }
-        this.#startRendering = false;
+        cancelAnimationFrame(this.#requestAnimationFrameId);
         this.#drawImageParams = undefined;
         CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING);
     }
