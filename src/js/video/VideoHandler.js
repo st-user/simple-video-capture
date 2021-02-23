@@ -19,7 +19,10 @@ export default class VideoHandler {
         try {
             this.#drawImageParams = undefined;
             if (this.#origStream) {
-                this.#origStream.getTracks().forEach(t => t.stop());
+                this.#origStream.getTracks().forEach(t => {
+                    t.stop();
+                    this.#endTrack();
+                });
             }
             this.#origStream = await navigator.mediaDevices.getDisplayMedia({
                 audio: false,
@@ -35,7 +38,7 @@ export default class VideoHandler {
             this.#$baseVideo.autoplay = true;
             this.#$baseVideo.playsinline = false;
             this.#$baseVideo.srcObject = this.#origStream;
-            
+
             const checkSourceStreamTrackResized = () => {
                 const _currentSettings = this.#origStream.getTracks()[0].getSettings();
                 if(currentSetting.width !== _currentSettings.width || currentSetting.height !== _currentSettings.height) {
@@ -187,8 +190,10 @@ export default class VideoHandler {
 
         if (0 < lengthSecond) {
             timer = setTimeout(() => {
-                this.#mediaRecorder.stop();
-            }, lengthSecond * 1000);
+                if (this.#mediaRecorder) {
+                    this.#mediaRecorder.stop();
+                }
+            }, lengthSecond * 1000 + 1000);
         }
     }
 
@@ -206,6 +211,12 @@ export default class VideoHandler {
     #endTrack() {
         clearTimeout(this.#resizeTimer);
         this.#origStream = undefined;
+        
+        if (this.#mediaRecorder) {
+            if (this.#mediaRecorder.state === 'recording') {
+                this.#mediaRecorder.stop();
+            }
+        }
         this.#mediaRecorder = undefined;
         if(this.#$baseVideo) {
             this.#$baseVideo.remove();
