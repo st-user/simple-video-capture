@@ -15,7 +15,7 @@ module.exports = merge(common, {
     },
     plugins: [
         new LicensePlugin({
-            excludedPackageTest: (packageName, version) => {
+            excludedPackageTest: () => {
                 return false;
             },
             outputFilename: `../dist/${PROJECT_NAME}/oss-licenses.json`
