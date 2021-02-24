@@ -12,10 +12,10 @@ export default function main() {
     const resultModel = new ResultModel();
 
     const captureControlView = new CaptureControlView(
-        captureControlModel, explanationsModel
+        captureControlModel, explanationsModel, resultModel
     );
     captureControlView.setUpEvent();
 
     new ExplanationsView(explanationsModel).setUpEvent();
-    new ResultView(resultModel).setUpEvent();
+    new ResultView(resultModel, captureControlModel).setUpEvent();
 }

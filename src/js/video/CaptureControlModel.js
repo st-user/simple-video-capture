@@ -20,6 +20,7 @@ const VIDEO_SIZE_ARBITRARY = 'arbitrary';
 export default class CaptureControlModel {
 
     #state;
+    #forceDisabled;
 
     #selectedVideoSize;
     #videoWidth;
@@ -32,6 +33,7 @@ export default class CaptureControlModel {
 
     constructor() {
         this.#state = CaptureControlState.BEFORE_PREVIEW;
+        this.#forceDisabled = false;
         this.#selectedVideoSize = VIDEO_SIZE_DEFAULT;
         this.#videoWidth = 0;
         this.#videoHeight = 0;
@@ -143,16 +145,21 @@ export default class CaptureControlModel {
         this.#videoLength = videoLength;
     }
 
+    setForceDisabled(isDisabled) {
+        this.#forceDisabled = isDisabled;
+        CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__CONTROL_STATE_CHANGE);   
+    }
+
     isPreviewBtnDisabled() {
-        return this.#errorMessage || this.#state === CaptureControlState.CAPTURING;
+        return this.#isForceDisabled() || this.#errorMessage || this.#state === CaptureControlState.CAPTURING;
     }
 
     isCaptureStartBtnDisabled() {
-        return this.#errorMessage || this.#state !== CaptureControlState.READY_TO_CAPTURE;
+        return this.#isForceDisabled() || this.#errorMessage || this.#state !== CaptureControlState.READY_TO_CAPTURE;
     }
 
     isCaptureEndBtnDisabled() {
-        return this.#errorMessage || this.#state !== CaptureControlState.CAPTURING;
+        return this.#isForceDisabled() || this.#errorMessage || this.#state !== CaptureControlState.CAPTURING;
     }
 
     isCapturing() {
@@ -160,11 +167,11 @@ export default class CaptureControlModel {
     }
 
     isVideoSizeSelectionDisabled() {
-        return this.#state !== CaptureControlState.READY_TO_CAPTURE;
+        return this.#isForceDisabled() || this.#state !== CaptureControlState.READY_TO_CAPTURE;
     }
 
     isVideoLengthSelectionDisabled() {
-        return this.#state === CaptureControlState.CAPTURING;
+        return this.#isForceDisabled() || this.#state === CaptureControlState.CAPTURING;
     }
 
     isVideoSizeArbitrary() {
@@ -177,6 +184,10 @@ export default class CaptureControlModel {
 
     getVideoCanvas() {
         return this.#videoHandler.getVideoCanvas();
+    }
+
+    #isForceDisabled() {
+        return this.#forceDisabled;
     }
 
     #resetVideoSizeSelection() {
