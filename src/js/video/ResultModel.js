@@ -197,7 +197,7 @@ export default class ResultModel {
                 this.#movieGif = image;
                 CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__MOVIE_GIF_CREATED);
             } else {
-                console.log(obj.error);
+                console.error(obj.error);
                 alert('画像gif作成中にエラーが発生しました。');
             }
         });
@@ -212,7 +212,6 @@ export default class ResultModel {
         if (this.#playing === PLAYING_TYPE.GIF) {
             this.#playing = PLAYING_TYPE.NONE;
         }
-        console.log(this.#playing);
         if (!confirm('作成済の画像gifを破棄しますがよろしいですか？')) {
             return;
         }
