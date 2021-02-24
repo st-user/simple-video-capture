@@ -194,7 +194,9 @@ export default class VideoHandler {
             this.#origStream.getTracks().forEach(t => t.stop());           
             clearTimeout(timer);
 
-            this.#endTrack();
+            this.#endTrack({
+                isSuccessCallback: true
+            });
         };
     
         this.#mediaRecorder.ondataavailable = event => {
@@ -223,7 +225,7 @@ export default class VideoHandler {
         return this.#$videoCanvas;
     }
 
-    #endTrack() {
+    #endTrack(eventData) {
         clearTimeout(this.#resizeTimer);
         this.#origStream = undefined;
         
@@ -243,6 +245,6 @@ export default class VideoHandler {
         }
         cancelAnimationFrame(this.#requestAnimationFrameId);
         this.#drawImageParams = undefined;
-        CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING);
+        CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING, eventData);
     }
 }

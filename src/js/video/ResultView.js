@@ -9,12 +9,14 @@ const mediaPropertiesTextTemplate = data => {
     return `(${width}x${height} 約${length}秒)`;
 };
 
-const gifCreationIndicatorTemplate = () => {
+const gifCreationIndicatorTemplate = data => {
     return `
-        <span class="results__download-media-info-indcator-box-1"></span>
-        <span class="results__download-media-info-indcator-box-2"></span>
-        <span class="results__download-media-info-indcator-box-3"></span>
-        作成中...
+        <div class="indicator">
+            <span class="indicator__download-media-info-indcator-box-1"></span>
+            <span class="indicator__download-media-info-indcator-box-2"></span>
+            <span class="indicator__download-media-info-indcator-box-3"></span>
+            ${data.text}
+        </div>
     `;
 };
 
@@ -23,6 +25,7 @@ export default class ResultView {
     #resultModel;
     #captureControlModel;
 
+    #$indicatorArea;
     #$resultArea;
 
     #$downloadLinkWebm;
@@ -55,6 +58,7 @@ export default class ResultView {
         this.#resultModel = resultModel;
         this.#captureControlModel = captureControlModel;
 
+        this.#$indicatorArea = DOM.query('#indicatorArea');
         this.#$resultArea = DOM.query('#resultArea');
 
         this.#$downloadLinkWebm = DOM.query('#downloadLinkWebm');
@@ -125,6 +129,13 @@ export default class ResultView {
             this.#resultModel.setMovieGifLength(this.#$movieGifOptionLength.value);
         });
 
+        CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING, event => {
+            this.#renderArea();
+            if (event.detail && event.detail.isSuccessCallback) {
+                this.#renderIndicator();
+            }
+        });
+
         CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW, () => {
             this.#renderArea();
         });
@@ -166,7 +177,15 @@ export default class ResultView {
         this.#renderArea();
     }
 
+    #renderIndicator() {
+        DOM.block(this.#$indicatorArea);
+        this.#$indicatorArea.innerHTML = gifCreationIndicatorTemplate({
+            text: 'ロード中...'
+        });
+    }
+
     #renderArea() {
+        DOM.none(this.#$indicatorArea);
         if (this.#resultModel.isPlayingTypeNone()) {
             if (this.#$video) {
                 this.#$video.remove();
@@ -230,7 +249,9 @@ export default class ResultView {
             DOM.none(this.#$recreateResultMovieGif);
 
             if (this.#resultModel.isCreatingMovieGif()) {
-                this.#$resultPropertiesMovieGif.innerHTML = gifCreationIndicatorTemplate();
+                this.#$resultPropertiesMovieGif.innerHTML = gifCreationIndicatorTemplate({
+                    text: '作成中...'
+                });
             } else {
                 this.#$resultPropertiesMovieGif.textContent = '(未作成)';
             }

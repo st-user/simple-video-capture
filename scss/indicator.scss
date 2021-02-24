@@ -1,0 +1,49 @@
+.indicator {
+
+    %__indicator-box {
+        animation-duration: 1s;
+        animation-iteration-count: infinite;
+        animation-name: indicator__indicator-box-animation;
+        background-color: #0e188a;
+        display: inline-block;
+        height: 12px;
+        width: 12px;
+    }
+
+    &__download-media-info-indcator-box-1 {
+        @extend %__indicator-box;
+        animation-delay: 0ms;
+    }
+
+    &__download-media-info-indcator-box-2 {
+        @extend %__indicator-box;
+        animation-delay: 500ms;
+    }
+
+    &__download-media-info-indcator-box-3 {
+        @extend %__indicator-box;
+        animation-delay: 1000ms;
+    }
+
+    @keyframes indicator__indicator-box-animation {
+        0% {
+            opacity: 0.3;
+        }
+
+        25% {
+            opacity: 0.7;
+        }
+
+        50% {
+            opacity: 1;
+        }
+
+        75% {
+            opacity: 0.7;
+        }
+
+        100% {
+            opacity: 0.3;
+        }   
+    }
+}
