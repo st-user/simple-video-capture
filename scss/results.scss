@@ -32,8 +32,8 @@
     &__download-link {
         &.is-disabled {
             color: #747575;
-            text-decoration: none;
             cursor: default;
+            text-decoration: none;
         }
     }
 
@@ -71,15 +71,19 @@
         0% {
             opacity: 0.3;
         }
+
         25% {
             opacity: 0.7;
         }
+
         50% {
             opacity: 1;
         }
+
         75% {
-            opacity: 0.7
+            opacity: 0.7;
         }
+
         100% {
             opacity: 0.3;
         }   
@@ -92,19 +96,19 @@
     }
 
     &__play-button {
-        border-radius: 4px;
         border: solid 1px #182329;
+        border-radius: 4px;
         display: inline-block;
-        margin-right: 3px;
         margin: auto;
+        margin-right: 3px;
         padding: 0.25em 0.5em;
         text-decoration: none;
 
         &.is-active {
             background: #b2b4b4;
-            box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+            box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.2);
             color: #fff;
-            text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+            text-shadow: 0 1px 0 rgba(0, 0, 0, 0.2);
         }
         
         &.is-disabled {
@@ -173,23 +177,23 @@
         -webkit-appearance: none; /* stylelint-disable-line property-no-vendor-prefix, plugin/no-unsupported-browser-features */
         appearance: none; /* stylelint-disable-line plugin/no-unsupported-browser-features */
         background-color: #fff;
-        border-radius: 0;
         border: 1px solid #333334;
+        border-radius: 0;
         height: 24px;
         width: 16px;
     }
 
     &__movie-gif-option-value-slider::-moz-range-thumb {
         background-color: #fff;
-        border-radius: 0;
         border: 1px solid #333334;
+        border-radius: 0;
         height: 24px;
         width: 16px;
     }
 
     &__movie-gif-options-remark {
-        margin-left: 24px;
         margin-bottom: 12px;
+        margin-left: 24px;
     }
 
     &__play-area {
