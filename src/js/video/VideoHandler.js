@@ -159,7 +159,6 @@ export default class VideoHandler {
 
         const chunks = [];
         let timer;
-        let startTime;
         let size;
         this.#mediaRecorder.onstop = () => {
 
@@ -170,20 +169,27 @@ export default class VideoHandler {
             }
 
             const blob = new Blob(chunks, { 'type': 'video/webm' });
-            chunks.length = 0;
-            
-            // const objectURL = URL.createObjectURL(blob);
-            const elapsedMillis = performance.now() - startTime;
+            chunks.length = 0;           
 
-            CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__RESULT_DATA_CREATED, {
-                blob, elapsedMillis, size
-            });
-            /*
-            const anchor = document.createElement('a');
-            anchor.href = objectURL;
-            anchor.download = 'capture.webm';
-            anchor.click();
-            URL.revokeObjectURL(objectURL);*/
+            const videoToCalcDuration = document.createElement('video');
+            const _objectURL = URL.createObjectURL(blob);
+
+            videoToCalcDuration.src = _objectURL;
+            videoToCalcDuration.onloadedmetadata = () => {
+    
+                videoToCalcDuration.currentTime = 7 * 24 * 60 * 1000;
+                videoToCalcDuration.onseeked = () => {
+                    const elapsedSeconds = videoToCalcDuration.duration;
+                    const objectURL = URL.createObjectURL(blob);
+
+                    CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__RESULT_DATA_CREATED, {
+                        objectURL, elapsedSeconds, size
+                    });
+
+                    URL.revokeObjectURL(_objectURL);
+                    videoToCalcDuration.onseeked = undefined;
+                };
+            };
     
             this.#origStream.getTracks().forEach(t => t.stop());           
             clearTimeout(timer);
@@ -196,7 +202,6 @@ export default class VideoHandler {
         };
         this.#mediaRecorder.start();
         size = { width: this.#$videoCanvas.width, height: this.#$videoCanvas.height };
-        startTime = performance.now();
 
         if (0 < lengthSecond) {
             timer = setTimeout(() => {

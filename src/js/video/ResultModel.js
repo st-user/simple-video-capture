@@ -28,9 +28,9 @@ export default class ResultModel {
         this.#init();
     }
 
-    setResult(blob, elapsedMillis, size) {
-        this.#objectURL = URL.createObjectURL(blob);
-        this.#webmLength = Math.ceil(elapsedMillis / 1000);
+    setResult(objectURL, elapsedSeconds, size) {
+        this.#objectURL = objectURL;
+        this.#webmLength = Math.round(elapsedSeconds);
         this.#movieGifLengthMax = Math.min(10, this.#webmLength);
         this.#movieGifLength = this.#movieGifLengthMax;
         this.#webmSize = size;

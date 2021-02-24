@@ -139,8 +139,8 @@ export default class ResultView {
         });
 
         CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__RESULT_DATA_CREATED, event => {
-            const { blob, elapsedMillis, size } = event.detail;
-            this.#resultModel.setResult(blob, elapsedMillis, size);
+            const { objectURL, elapsedSeconds, size } = event.detail;
+            this.#resultModel.setResult(objectURL, elapsedSeconds, size);
             this.#renderArea();
         });
 
