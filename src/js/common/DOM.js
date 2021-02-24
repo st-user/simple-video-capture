@@ -78,6 +78,10 @@ export default class DOM {
         element.style.display = 'block';
     }
 
+    static inlineBlock(element) {
+        element.style.display = 'inline-block';
+    }
+
     static optionValue(selectElement) {
         const selectedIndex = selectElement.selectedIndex;
         return selectElement.options[selectedIndex].value;

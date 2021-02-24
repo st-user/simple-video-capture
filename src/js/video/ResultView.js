@@ -9,6 +9,15 @@ const mediaPropertiesTextTemplate = data => {
     return `(${width}x${height} 約${length}秒)`;
 };
 
+const gifCreationIndicatorTemplate = () => {
+    return `
+        <span class="results__download-media-info-indcator-box-1"></span>
+        <span class="results__download-media-info-indcator-box-2"></span>
+        <span class="results__download-media-info-indcator-box-3"></span>
+        作成中...
+    `;
+};
+
 export default class ResultView {
 
     #resultModel;
@@ -35,6 +44,7 @@ export default class ResultView {
     #$movieGifOptionsRemark;
 
     #$playResultVideoArea;
+    #$playResultVideoAreaTitle;
     #$video;
     #origVideoSize;
     #$movieGif;
@@ -66,6 +76,7 @@ export default class ResultView {
         this.#$movieGifOptionsRemark = DOM.query('#movieGifOptionsRemark');
 
         this.#$playResultVideoArea = DOM.query('#playResultVideoArea');
+        this.#$playResultVideoAreaTitle = DOM.query('#playResultVideoAreaTitle');
     }
 
     setUpEvent() {
@@ -78,25 +89,19 @@ export default class ResultView {
 
         DOM.click(this.#$playResultWebm, event => {
             event.preventDefault();
-            if (!this.#resultModel.isWebmControlDisabled()) {
-                this.#resultModel.playWebm();
-            }
+            this.#resultModel.playWebm();
         });
 
 
         DOM.click(this.#$downloadLinkMovieGif, event => {
             event.preventDefault();
-            if (!this.#resultModel.isMovieGifDownloadLinkDisabled()) {
-                this.#resultModel.downloadMovieGif();
-            } 
+            this.#resultModel.downloadMovieGif();
         });
 
         DOM.click(this.#$playResultMovieGif, event => {
             event.preventDefault();
-            if (!this.#resultModel.isMovieControlDisabled()) {
-                this.#resultModel.playMovieGif();
-            }
-            
+            this.#resultModel.playMovieGif();
+           
         });
         
         DOM.click(this.#$createResultMovieGif, event => {
@@ -109,9 +114,7 @@ export default class ResultView {
 
         DOM.click(this.#$recreateResultMovieGif, event => {
             event.preventDefault();
-            if (!this.#resultModel.isMovieControlDisabled()) {
-                this.#resultModel.recreateMovieGif();
-            }
+            this.#resultModel.recreateMovieGif();
         });
 
         DOM.change(this.#$movieGifOptionSize, () => {
@@ -164,17 +167,20 @@ export default class ResultView {
     }
 
     #renderArea() {
-        if (this.#resultModel.resultExists()) {
-            DOM.block(this.#$resultArea);
-        } else {
-            DOM.none(this.#$resultArea);
-            DOM.none(this.#$playResultVideoArea);
+        if (this.#resultModel.isPlayingTypeNone()) {
             if (this.#$video) {
                 this.#$video.remove();
             }
             if (this.#$movieGif) {
                 this.#$movieGif.remove();
             }
+            DOM.none(this.#$playResultVideoArea);
+        }
+
+        if (this.#resultModel.resultExists()) {
+            DOM.block(this.#$resultArea);
+        } else {
+            DOM.none(this.#$resultArea);
             return;
         }
 
@@ -208,8 +214,8 @@ export default class ResultView {
 
         if (this.#resultModel.isMovieGifCreated()) {
             DOM.none(this.#$createResultMovieGif);
-            DOM.block(this.#$playResultMovieGif);
-            DOM.block(this.#$recreateResultMovieGif);
+            DOM.inlineBlock(this.#$playResultMovieGif);
+            DOM.inlineBlock(this.#$recreateResultMovieGif);
 
             const { width, height } = this.#resultModel.getMovieGifSizeAttr();
             const { value } = this.#resultModel.getMovieGifLengthAttr();
@@ -219,9 +225,15 @@ export default class ResultView {
             });
 
         } else {
-            DOM.block(this.#$createResultMovieGif);
+            DOM.inlineBlock(this.#$createResultMovieGif);
             DOM.none(this.#$playResultMovieGif);
             DOM.none(this.#$recreateResultMovieGif);
+
+            if (this.#resultModel.isCreatingMovieGif()) {
+                this.#$resultPropertiesMovieGif.innerHTML = gifCreationIndicatorTemplate();
+            } else {
+                this.#$resultPropertiesMovieGif.textContent = '(未作成)';
+            }
         }
 
         this.#disableControl(this.#$downloadLinkMovieGif, this.#resultModel.isMovieGifDownloadLinkDisabled());
@@ -239,7 +251,7 @@ export default class ResultView {
         this.#$movieGifOptionSize.value = movieGifSizeAttr.value;
         this.#$movieGifOptionSizeText.textContent = `${movieGifSizeAttr.width}x${movieGifSizeAttr.height}`;
         this.#$movieGifOptionSize.disabled = this.#resultModel.isMovieGifOptionsDisabled();
-        this.#disableControl(this.#$createResultMovieGif, this.#resultModel.isMovieGifOptionsDisabled());
+        this.#disableControl(this.#$movieGifOptionSize, this.#resultModel.isMovieGifOptionsDisabled());
 
         const movieGifLengthAttr = this.#resultModel.getMovieGifLengthAttr();
         this.#$movieGifOptionLength.setAttribute('max', movieGifLengthAttr.max);
@@ -268,6 +280,8 @@ export default class ResultView {
                     height: this.#$video.videoHeight
                 };
                 this.#resizeVideo();
+
+                this.#$playResultVideoAreaTitle.textContent = '[webm]';
                 this.#$playResultVideoArea.appendChild(this.#$video);
             });
         }
@@ -292,6 +306,7 @@ export default class ResultView {
         this.#origMovieGifSize.height = height;
 
         this.#$movieGif.src = movieGif;
+        this.#$playResultVideoAreaTitle.textContent = '[画像gif]';
         this.#$playResultVideoArea.appendChild(this.#$movieGif);
         this.#resizeMovieGif();
     }

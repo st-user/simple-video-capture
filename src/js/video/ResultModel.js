@@ -2,6 +2,10 @@ import { CustomEventNames } from '../common/CustomEventNames.js';
 import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 const gifshot = require('gifshot');
 
+const PLAYING_TYPE = {
+    NONE: 0, WEBM: 1, GIF: 2 
+};
+
 export default class ResultModel {
 
     #objectURL;
@@ -17,6 +21,8 @@ export default class ResultModel {
 
     #webmLength;
     #webmSize;
+
+    #playing;
 
     constructor() {
         this.#init();
@@ -35,6 +41,10 @@ export default class ResultModel {
             return true;
         }
 
+        if (this.isCreatingMovieGif()) {
+            return false;
+        }
+
         if (!confirm('録画結果を破棄して、プレビューを開始してもよろしいですか？')) {
             return false;
         }
@@ -43,6 +53,8 @@ export default class ResultModel {
     }
 
     #init() {
+        this.#playing = PLAYING_TYPE.NONE;
+
         if (this.#objectURL) {
             URL.revokeObjectURL(this.#objectURL);
             this.#objectURL = undefined;
@@ -94,6 +106,10 @@ export default class ResultModel {
         return this.isCreatingMovieGif() || this.isMovieGifCreated();
     }
 
+    isPlayingTypeNone() {
+        return this.#playing === PLAYING_TYPE.NONE;
+    }
+
     getObjectURL() {
         return this.#objectURL;
     }
@@ -136,12 +152,19 @@ export default class ResultModel {
     }
 
     playWebm() {
+        if (this.isWebmControlDisabled()) {
+            return;
+        }
+        this.#playing = PLAYING_TYPE.WEBM;
         CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__PLAY_RESULT_VIDEO, {
             objectURL: this.#objectURL
         });
     }
 
     downloadMovieGif() {
+        if (this.isMovieGifDownloadLinkDisabled()) {
+            return;
+        }
         const anchor = document.createElement('a');
         anchor.href = this.#movieGif;
         anchor.download = this.getMovieGifFilename();
@@ -150,6 +173,9 @@ export default class ResultModel {
 
 
     createMovieGif() {
+        if (this.isMovieControlDisabled()) {
+            return;
+        }
         if(!confirm('画像gifの作成には数秒から数十秒ほど時間がかかり、PCにそれなりの負荷がかかります。画像gifを作成してもよろしいですか？')) {
             return;
         }
@@ -180,6 +206,13 @@ export default class ResultModel {
     }
 
     recreateMovieGif() {
+        if (this.isMovieControlDisabled()) {
+            return;
+        }
+        if (this.#playing === PLAYING_TYPE.GIF) {
+            this.#playing = PLAYING_TYPE.NONE;
+        }
+        console.log(this.#playing);
         if (!confirm('作成済の画像gifを破棄しますがよろしいですか？')) {
             return;
         }
@@ -188,6 +221,10 @@ export default class ResultModel {
     }
 
     playMovieGif() {
+        if (this.isMovieControlDisabled()) {
+            return;
+        }
+        this.#playing = PLAYING_TYPE.GIF;
         CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__PLAY_RESULT_VIDEO, {
             movieGif: this.#movieGif
         });

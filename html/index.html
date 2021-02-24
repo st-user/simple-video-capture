@@ -100,32 +100,30 @@
         </div>
 
         <div id="resultArea" class="results">
-            <div class="results__message">録画が終了しました。ダウンロードが可能です。</div>
+            <div class="results__message">録画が終了しました。</div>
             <ul class="results__download-links">
                 <li class="results__download-li clearfixContainer">
                     <div class="results__download-title">[webm]</div>
-                    <div class="results__download-link">
-                        <a id="downloadLinkWebm"></a>
+                    <div class="results__download-link-wrapper">
+                        <a id="downloadLinkWebm" class="results__download-link"></a>
+                        <div id="resultPropertiesWebm" class="results__download-media-info">
+                        </div>
                     </div>
                     <div class="results__play-button-wrapper">
                         <a href="#" id="playResultWebm" class="results__play-button">再生</a>
                     </div>
-                    <div id="resultPropertiesWebm">
-
-                    </div>
                 </li>
                 <li class="results__download-li clearfixContainer">
                     <div class="results__download-title">[画像gif]</div>
-                    <div class="results__download-link">
-                        <a id="downloadLinkMovieGif"></a>
+                    <div class="results__download-link-wrapper">
+                        <a id="downloadLinkMovieGif" class="results__download-link"></a>
+                        <div id="resultPropertiesMovieGif" class="results__download-media-info">
+                        </div>
                     </div>
                     <div class="results__play-button-wrapper">
                         <a href="#" id="createResultMovieGif" class="results__play-button">作成</a>
                         <a href="#" id="playResultMovieGif" class="results__play-button">再生</a>
                         <a href="#" id="recreateResultMovieGif" class="results__play-button">再作成</a>
-                    </div>
-                    <div id="resultPropertiesMovieGif">
-
                     </div>
                 </li>
             </ul>
@@ -151,12 +149,14 @@
                         </div>
                     </li>
                 </ul>
-                <div id="movieGifOptionsRemark">
+                <div id="movieGifOptionsRemark" class="results__movie-gif-options-remark">
                     ※画像gifのプロパティを変更する場合、再作成する必要があります。
                 </div>
             </div>
         </div>
-        <div id="playResultVideoArea" class="results__play-area"></div>
+        <div id="playResultVideoArea" class="results__play-area">
+            <div id="playResultVideoAreaTitle" class="results__play-area-title"></div>
+        </div>
 
         <script>
             var APP_VERSION = '1.1.3';
