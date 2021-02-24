@@ -4,12 +4,22 @@
     max-width: 960px;
     padding: 0 24px;
 
+
+    &__toggle-wrapper {
+        margin: auto;
+        max-width: 540px;
+    }
+
     &__toggle {
+
         cursor: pointer;
         font-size: 12px;
         font-weight: bold;
         height: 24px;
         line-height: 24px;
+        margin: auto;
+        margin-bottom: 12px;
+        text-align: center;
         text-decoration: underline;
         width: 100px;
     }    

@@ -33,6 +33,7 @@
         &.is-disabled {
             color: #747575;
             text-decoration: none;
+            cursor: default;
         }
     }
 
@@ -188,6 +189,7 @@
 
     &__movie-gif-options-remark {
         margin-left: 24px;
+        margin-bottom: 12px;
     }
 
     &__play-area {

@@ -30,7 +30,7 @@ export default class ResultModel {
 
     setResult(objectURL, elapsedSeconds, size) {
         this.#objectURL = objectURL;
-        this.#webmLength = Math.round(elapsedSeconds);
+        this.#webmLength = Math.max(1, Math.round(elapsedSeconds));
         this.#movieGifLengthMax = Math.min(10, this.#webmLength);
         this.#movieGifLength = this.#movieGifLengthMax;
         this.#webmSize = size;
