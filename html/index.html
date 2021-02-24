@@ -46,7 +46,7 @@
                     <div class="controls__option-value">
                         <div>
                             <select name="videoSizeSelection" id="videoSizeSelection">
-                                <option value="default">デフォルト</option>
+                                <option value="default" selected>デフォルト</option>
                                 <option value="2k">2k(2560x1440)</option>
                                 <option value="fullHd">Full HD (1920x1080)</option>
                                 <option value="hd">HD (1280x720)</option>
@@ -70,7 +70,7 @@
                     <div class="controls__option-value">
                         <select name="videoLengthSelection" id="videoLengthSelection">
                             <option value="0">指定なし</option>
-                            <option value="10">10秒</option>
+                            <option value="10" selected>10秒</option>
                             <option value="30">30秒</option>
                             <option value="60">1分</option>
                         </select>
@@ -97,6 +97,55 @@
 
         <div id="previewArea" class="preview">
             <div id="videoInfo" class="preview__video-info"></div>
+        </div>
+
+        <div id="resultArea">
+            <ul>
+                <li>
+                    <div>[webm]</div>
+                    <div>
+                        <a id="downloadLinkWebm"></a>
+                    </div>
+                    <div>
+                        <div id="playResultWebm">再生</div>
+                    </div>
+                </li>
+                <li>
+                    <div>[画像gif]</div>
+                    <div>
+                        <a id="downloadLinkMovieGif"></a>
+                    </div>
+                    <div>
+                        <div id="playResultMovieGif">再生</div>
+                    </div>
+                </li>
+            </ul>
+            <div>
+                <div>画像gif作成のオプション</div>
+                <ul>
+                    <li>
+                        <div>
+                            サイズ:
+                        </div>
+                        <div>
+                            <input type="range" min="1" max="10" value="1" id="movieGifOptionSize"/>
+                            <span id="movieGifOptionSizeText"></span>
+                        </div>
+                    </li>
+                    <li>
+                        <div>
+                            時間の長さ:
+                        </div>
+                        <div>
+                            <input type="range" min="1" max="1" value="1" id="movieGifOptionLength"/>
+                            <span id="movieGifOptionLengthText"></span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            <div id="playResultVideoArea">
+
+            </div>
         </div>
 
         <script>

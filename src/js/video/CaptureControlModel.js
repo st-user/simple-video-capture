@@ -35,7 +35,7 @@ export default class CaptureControlModel {
         this.#selectedVideoSize = VIDEO_SIZE_DEFAULT;
         this.#videoWidth = 0;
         this.#videoHeight = 0;
-        this.#videoLength = 0;
+        this.#videoLength = 10;
 
         this.#videoHandler = new VideoHandler();
     }

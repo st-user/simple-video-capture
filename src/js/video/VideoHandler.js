@@ -159,6 +159,8 @@ export default class VideoHandler {
 
         const chunks = [];
         let timer;
+        let startTime;
+        let size;
         this.#mediaRecorder.onstop = () => {
 
             if (!this.#origStream) {
@@ -169,13 +171,19 @@ export default class VideoHandler {
 
             const blob = new Blob(chunks, { 'type': 'video/webm' });
             chunks.length = 0;
-                    
+            
+            // const objectURL = URL.createObjectURL(blob);
+            const elapsedMillis = performance.now() - startTime;
+
+            CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__RESULT_DATA_CREATED, {
+                blob, elapsedMillis, size
+            });
+            /*
             const anchor = document.createElement('a');
-            const objectURL = URL.createObjectURL(blob);
             anchor.href = objectURL;
             anchor.download = 'capture.webm';
             anchor.click();
-            URL.revokeObjectURL(objectURL);
+            URL.revokeObjectURL(objectURL);*/
     
             this.#origStream.getTracks().forEach(t => t.stop());           
             clearTimeout(timer);
@@ -187,6 +195,8 @@ export default class VideoHandler {
             chunks.push(event.data);
         };
         this.#mediaRecorder.start();
+        size = { width: this.#$videoCanvas.width, height: this.#$videoCanvas.height };
+        startTime = performance.now();
 
         if (0 < lengthSecond) {
             timer = setTimeout(() => {

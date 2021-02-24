@@ -28,6 +28,9 @@ CustomEventNames
     .set('SIMPLE_VIDEO_CAPTURE__START_CAPTURING', 'simple-video-capture/start-capturing')
     .set('SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING', 'simple-video-capture/stop-capturing')
     .set('SIMPLE_VIDEO_CAPTURE__TOGGLE_EXPLANATIONS', 'simple-video-capture/toggle-explanations')
+    .set('SIMPLE_VIDEO_CAPTURE__RESULT_DATA_CREATED', 'simple-video-capture/result-data-created')
+    .set('SIMPLE_VIDEO_CAPTURE__PLAY_RESULT_VIDEO', 'simple-video-capture/play-result-video')
+    .set('SIMPLE_VIDEO_CAPTURE__CHANGE_MOVIE_GIF_OPTION', 'simple-video-capture/change-movie-gif-option')
 
 ;
 
