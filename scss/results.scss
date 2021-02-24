@@ -1,0 +1,116 @@
+.results {
+    margin: auto;
+    max-width: 960px;
+    padding: 0 24px;
+
+    &__message {
+        font-weight: bold;
+        margin-bottom: 12px;
+    }
+
+    &__download-links {
+        margin-bottom: 12px;
+    }
+
+    &__download-li {
+        margin-bottom: 6px;
+    }
+
+    &__download-title {
+        float: left;
+        width: 70px;
+        line-height: 24px;
+    }
+
+    &__download-link {
+        float: left;
+        min-width: 140px;
+        line-height: 24px;
+    }
+
+    &__play-button-wrapper {
+        float: left;
+    }
+
+    &__play-button {
+        display: inline-block;
+        padding: 0.25em 0.5em;
+        text-decoration: none;
+        color: #FFF;
+        background: #b2b4b4;
+        border: solid 1px #182329;
+        border-radius: 4px;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+        text-shadow: 0 1px 0 rgba(0,0,0,0.2);
+    }
+
+    &__play-button:hover {
+        opacity: 0.7;
+    }
+
+    &__movie-gif-options-area {
+        margin-left: 24px;
+    }
+
+    &__movie-gif-options {
+        margin-left: 24px;
+    }
+
+    &__movie-gif-options-title {
+        margin-bottom: 12px;
+    }
+
+    &__movie-gif-option-li {
+        margin-bottom: 12px;
+    }
+
+    &__movie-gif-option-title {
+        float: left;
+        width: 100px;
+    }
+
+    &__movie-gif-option-value {
+        float: left;
+    }
+
+    &__movie-gif-option-value-slider {
+        /* https://caniuse.com/css-appearance */
+        -webkit-appearance: none; /* stylelint-disable-line property-no-vendor-prefix, plugin/no-unsupported-browser-features */
+        appearance: none;  /* stylelint-disable-line plugin/no-unsupported-browser-features */
+        outline: none;
+        opacity: 0.8;
+        background: rgba(178, 180, 180, 1);
+        height: 12px;
+    }
+
+    &__movie-gif-option-value-slider:hover {
+        opacity: 1;
+    }
+
+    &__movie-gif-option-value-slider::-webkit-slider-thumb {
+        /* https://caniuse.com/css-appearance */
+        -webkit-appearance: none; /* stylelint-disable-line property-no-vendor-prefix, plugin/no-unsupported-browser-features */
+        appearance: none; /* stylelint-disable-line plugin/no-unsupported-browser-features */
+        border: 1px solid #333334;
+        background-color: #fff;
+        border-radius: 0;
+        height: 24px;
+        width: 16px;
+    }
+
+    &__movie-gif-option-value-slider::-moz-range-thumb {
+        border: 1px solid #333334;
+        background-color: #fff;
+        border-radius: 0;
+        height: 24px;
+        width: 16px;
+    }
+
+    &__play-area {
+        background-color: #e6e4e4;
+        margin: auto;
+        padding-bottom: 12px;
+        padding-left: 5%;
+        padding-top: 12px;
+    }
+}

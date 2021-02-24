@@ -99,54 +99,53 @@
             <div id="videoInfo" class="preview__video-info"></div>
         </div>
 
-        <div id="resultArea">
-            <ul>
-                <li>
-                    <div>[webm]</div>
-                    <div>
+        <div id="resultArea" class="results">
+            <div class="results__message">録画が終了しました。ダウンロードが可能です。</div>
+            <ul class="results__download-links">
+                <li class="results__download-li clearfixContainer">
+                    <div class="results__download-title">[webm]</div>
+                    <div class="results__download-link">
                         <a id="downloadLinkWebm"></a>
                     </div>
-                    <div>
-                        <div id="playResultWebm">再生</div>
+                    <div class="results__play-button-wrapper">
+                        <a href="#" id="playResultWebm" class="results__play-button">再生</a>
                     </div>
                 </li>
-                <li>
-                    <div>[画像gif]</div>
-                    <div>
+                <li class="results__download-li clearfixContainer">
+                    <div class="results__download-title">[画像gif]</div>
+                    <div class="results__download-link">
                         <a id="downloadLinkMovieGif"></a>
                     </div>
-                    <div>
-                        <div id="playResultMovieGif">再生</div>
+                    <div class="results__play-button-wrapper">
+                        <a href="#" id="playResultMovieGif" class="results__play-button">再生</a>
                     </div>
                 </li>
             </ul>
-            <div>
-                <div>画像gif作成のオプション</div>
-                <ul>
-                    <li>
-                        <div>
+            <div class="results__movie-gif-options-area">
+                <div class="results__movie-gif-options-title">画像gif作成のオプション:</div>
+                <ul class="results__movie-gif-options">
+                    <li class="results__movie-gif-option-li clearfixContainer">
+                        <div class="results__movie-gif-option-title">
                             サイズ:
                         </div>
-                        <div>
-                            <input type="range" min="1" max="10" value="1" id="movieGifOptionSize"/>
+                        <div class="results__movie-gif-option-value">
+                            <input type="range" min="1" max="10" value="1" id="movieGifOptionSize" class="results__movie-gif-option-value-slider"/>
                             <span id="movieGifOptionSizeText"></span>
                         </div>
                     </li>
-                    <li>
-                        <div>
+                    <li class="results__movie-gif-option-li clearfixContainer">
+                        <div class="results__movie-gif-option-title">
                             時間の長さ:
                         </div>
-                        <div>
-                            <input type="range" min="1" max="1" value="1" id="movieGifOptionLength"/>
+                        <div class="results__movie-gif-option-value">
+                            <input type="range" min="1" max="1" value="1" id="movieGifOptionLength" class="results__movie-gif-option-value-slider"/>
                             <span id="movieGifOptionLengthText"></span>
                         </div>
                     </li>
                 </ul>
             </div>
-            <div id="playResultVideoArea">
-
-            </div>
         </div>
+        <div id="playResultVideoArea" class="results__play-area"></div>
 
         <script>
             var APP_VERSION = '1.1.3';

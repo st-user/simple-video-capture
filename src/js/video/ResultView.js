@@ -56,8 +56,14 @@ export default class ResultView {
             this.#resultModel.downloadMovieGif();
         });
 
-        DOM.click(this.#$playResultWebm, () => this.#resultModel.playWebm());
-        DOM.click(this.#$playResultMovieGif, () => this.#resultModel.playMovieGif());
+        DOM.click(this.#$playResultWebm, event => {
+            event.preventDefault();
+            this.#resultModel.playWebm();
+        });
+        DOM.click(this.#$playResultMovieGif, () => event => {
+            event.preventDefault();
+            this.#resultModel.playMovieGif();
+        });
 
         DOM.change(this.#$movieGifOptionSize, () => {
             this.#resultModel.setMovieGifSizeScale(this.#$movieGifOptionSize.value);
@@ -101,6 +107,7 @@ export default class ResultView {
             DOM.block(this.#$resultArea);
         } else {
             DOM.none(this.#$resultArea);
+            DOM.none(this.#$playResultVideoArea);
             return;
         }
 
@@ -131,6 +138,7 @@ export default class ResultView {
     }
 
     #renderVideo(objectURL) {
+        DOM.block(this.#$playResultVideoArea);
         if (this.#$movieGif) {
             this.#$movieGif.remove();
         }
@@ -152,6 +160,7 @@ export default class ResultView {
     }
 
     #renderMovieGif(movieGif) {
+        DOM.block(this.#$playResultVideoArea);
         if (this.#$video) {
             this.#$video.remove();
         }
