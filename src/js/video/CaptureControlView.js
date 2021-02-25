@@ -1,3 +1,4 @@
+import { MessageType } from './CaptureControlConst.js';
 import DOM from '../common/DOM.js';
 import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 import { CustomEventNames } from '../common/CustomEventNames.js';
@@ -7,15 +8,6 @@ const videoInfoTemplate = data => {
     return `
         ▼録画対象 [サイズ：${data.width}x${data.height}]
     `;
-};
-
-const MESSAGE_TYPE = {
-    error: {
-        styleClass: 'is-error'
-    },
-    remark: {
-        styleClass: 'is-remark'
-    }
 };
 
 export default class CaptureControlView {
@@ -32,7 +24,12 @@ export default class CaptureControlView {
     #$previewArea;
     #$videoInfo;
 
+    #$countDownMessageArea;
     #$messageArea;
+    
+    #$useAutoStart;
+    #$autoStartDelaySelection;
+
     #$videoSizeSelection;
     #$videoSizeInputArea;
     #$videoWidth;
@@ -54,6 +51,10 @@ export default class CaptureControlView {
         this.#$videoInfo = DOM.query('#videoInfo');
 
         this.#$messageArea = DOM.query('#messageArea');
+
+        this.#$useAutoStart = DOM.query('#useAutoStart');
+        this.#$autoStartDelaySelection = DOM.query('#autoStartDelay');
+
         this.#$videoSizeSelection = DOM.query('#videoSizeSelection');
         this.#$videoSizeInputArea = DOM.query('#videoSizeInputArea');
         this.#$videoWidth = DOM.query('#videoWidth');
@@ -82,6 +83,15 @@ export default class CaptureControlView {
             this.#captureControlModel.captureEnd();
         });
 
+        const changeAutoStartSetting = () => {
+            this.#captureControlModel.changeAutoStartSetting(
+                this.#$useAutoStart.checked, 
+                parseInt(DOM.optionValue(this.#$autoStartDelaySelection), 10)
+            );
+        };
+        DOM.change(this.#$useAutoStart, changeAutoStartSetting);
+        DOM.change(this.#$autoStartDelaySelection, changeAutoStartSetting);
+
         const changeVideoSize = () => {
             this.#captureControlModel.changeVideoSize(
                 DOM.optionValue(this.#$videoSizeSelection),
@@ -107,6 +117,10 @@ export default class CaptureControlView {
         CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW, () => {
             this.#resetVideoSizeSelection();
             this.#renderVideo();
+            this.#renderControls();
+        });
+
+        CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__COUNT_DOWN_TO_START_CAPTURING, () => {
             this.#renderControls();
         });
 
@@ -210,16 +224,23 @@ export default class CaptureControlView {
 
     #renderMessageArea() {
 
-        let message = this.#captureControlModel.isCapturing() ? '録画中は、ブラウザウィンドウを最小化したり、別のタブを選択しないでください。' : '';
-        let messageStyleClass = !message ? '' : MESSAGE_TYPE.remark.styleClass;
+        const autoStartDelayCount = this.#captureControlModel.getAutoStartDelayCount();
+        let message = 0 < autoStartDelayCount ? `録画開始 ${autoStartDelayCount} 秒前` : '';
+        message = this.#captureControlModel.isCapturing() ? '録画中は、ブラウザウィンドウを最小化しないでください。' : message;
+
+        let messageStyleClass = !message ? '' : MessageType.remark.styleClass;
+
         const errorMessage = this.#captureControlModel.getErrorMessage();
         if (errorMessage) {
             message = errorMessage;
-            messageStyleClass = MESSAGE_TYPE.error.styleClass;
+            messageStyleClass = MessageType.error.styleClass;
         }
+        this.#setMessageToMessageArea(messageStyleClass, message);
+    }
 
-        for (const key in MESSAGE_TYPE) {
-            this.#$messageArea.classList.remove(MESSAGE_TYPE[key].styleClass);    
+    #setMessageToMessageArea(messageStyleClass, message) {
+        for (const key in MessageType) {
+            this.#$messageArea.classList.remove(MessageType[key].styleClass);    
         }
 
         if (messageStyleClass) {

@@ -10,4 +10,13 @@ const VideoSizeDef = {
     'hd': { width: 1280, height: 720 }
 };
 
-export { CaptureControlState, VideoSizeDef };
+const MessageType = {
+    error: {
+        styleClass: 'is-error'
+    },
+    remark: {
+        styleClass: 'is-remark'
+    }
+};
+
+export { CaptureControlState, VideoSizeDef, MessageType };

@@ -1,4 +1,4 @@
-import { CaptureControlState, VideoSizeDef } from './CaptureControlState.js';
+import { CaptureControlState, VideoSizeDef } from './CaptureControlConst.js';
 import { CustomEventNames } from '../common/CustomEventNames.js';
 import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 import VideoHandler from './VideoHandler.js';
@@ -22,6 +22,10 @@ export default class CaptureControlModel {
     #state;
     #forceDisabled;
 
+    #useAutoStart;
+    #autoStartDelay;
+    #autoStartDelayCount;
+
     #selectedVideoSize;
     #videoWidth;
     #videoHeight;
@@ -34,6 +38,11 @@ export default class CaptureControlModel {
     constructor() {
         this.#state = CaptureControlState.BEFORE_PREVIEW;
         this.#forceDisabled = false;
+
+        this.#useAutoStart = true;
+        this.#autoStartDelay = 0;
+        this.#autoStartDelayCount = 0;
+
         this.#selectedVideoSize = VIDEO_SIZE_DEFAULT;
         this.#videoWidth = 0;
         this.#videoHeight = 0;
@@ -56,6 +65,7 @@ export default class CaptureControlModel {
         if (canCapture) {
             this.#state = CaptureControlState.READY_TO_CAPTURE;
             CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW);
+            this.#startCountDown();
         }
     }
 
@@ -80,6 +90,11 @@ export default class CaptureControlModel {
         this.#resetVideoSizeSelection();
         this.#state = CaptureControlState.BEFORE_PREVIEW;
         this.#videoHandler.stopCapturing();
+    }
+
+    changeAutoStartSetting(useAutoStart, autoStartDelay) {
+        this.#useAutoStart = useAutoStart;
+        this.#autoStartDelay = autoStartDelay;
     }
 
     changeVideoSize(selectedVideoSize, width, height) {
@@ -184,6 +199,33 @@ export default class CaptureControlModel {
 
     getVideoCanvas() {
         return this.#videoHandler.getVideoCanvas();
+    }
+
+    getAutoStartDelayCount() {
+        return this.#autoStartDelayCount;
+    }
+
+    #startCountDown() {
+        if (!this.#useAutoStart) {
+            return;
+        }
+        this.#autoStartDelayCount = this.#autoStartDelay;
+        const countDown = () => {
+            if (this.#state !== CaptureControlState.READY_TO_CAPTURE) {
+                this.#autoStartDelayCount = 0;
+                return;
+            }
+            CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__COUNT_DOWN_TO_START_CAPTURING);
+            if (this.#autoStartDelayCount === 0) {
+                this.captureStart();
+                return;
+            }
+            setTimeout(() => {
+                this.#autoStartDelayCount--;
+                countDown();
+            }, 1000);
+        };
+        setTimeout(countDown, 0);
     }
 
     #isForceDisabled() {

@@ -26,6 +26,7 @@ CustomEventNames
     .set('SIMPLE_VIDEO_CAPTURE__VIDEO_SIZE_CHANGE', 'simple-video-capture/video-size-change')
     .set('SIMPLE_VIDEO_CAPTURE__START_PREVIEW', 'simple-video-capture/start-preview')
     .set('SIMPLE_VIDEO_CAPTURE__START_CAPTURING', 'simple-video-capture/start-capturing')
+    .set('SIMPLE_VIDEO_CAPTURE__COUNT_DOWN_TO_START_CAPTURING', 'simple-video-capture/count-down-to-start-capturing')
     .set('SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING', 'simple-video-capture/stop-capturing')
     .set('SIMPLE_VIDEO_CAPTURE__TOGGLE_EXPLANATIONS', 'simple-video-capture/toggle-explanations')
     .set('SIMPLE_VIDEO_CAPTURE__RESULT_AREA_STATE_CHANGE', 'simple-video-capture/result-area-state-change')

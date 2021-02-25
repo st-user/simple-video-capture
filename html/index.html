@@ -46,7 +46,24 @@
                 </li>
             </ul>
             <div id="messageArea" class="controls__message-area"></div>
+            <ul class="controls__settings">
+                <!-- auto start (or not) -->
+                <li class="controls__settings-li">
+                    <label>
+                        <input type="checkbox" name="useAutoStart" id="useAutoStart" checked/>
+                        プレビュー実行後
+                        <select name="autoStartDelay" id="autoStartDelay">
+                            <option value="0" selected>0</option>
+                            <option value="3">3</option>
+                            <option value="5">5</option>
+                            <option value="10">10</option>
+                        </select>
+                        秒後に自動で録画開始する
+                    </label>
+                </li>
+            </ul>
             <ul class="controls__options">
+
                 <!-- expected size -->
                 <li class="controls__options-li clearfixContainer">
                     <div class="controls__option-title">
