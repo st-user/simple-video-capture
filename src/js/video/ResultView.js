@@ -304,6 +304,7 @@ export default class ResultView {
 
                 this.#$playResultVideoAreaTitle.textContent = '[webm]';
                 this.#$playResultVideoArea.appendChild(this.#$video);
+                this.#scrollToPlayArea();
             });
         }
         this.#$video.autoplay = true;
@@ -330,6 +331,11 @@ export default class ResultView {
         this.#$playResultVideoAreaTitle.textContent = '[画像gif]';
         this.#$playResultVideoArea.appendChild(this.#$movieGif);
         this.#resizeMovieGif();
+        this.#scrollToPlayArea();
+    }
+
+    #scrollToPlayArea() {
+        window.scrollTo({ top : this.#$playResultVideoArea.offsetTop, behavior: 'smooth' });
     }
 
     #resizeVideo() {
