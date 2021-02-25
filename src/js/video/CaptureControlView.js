@@ -24,7 +24,6 @@ export default class CaptureControlView {
     #$previewArea;
     #$videoInfo;
 
-    #$countDownMessageArea;
     #$messageArea;
     
     #$useAutoStart;
@@ -115,7 +114,6 @@ export default class CaptureControlView {
         });
     
         CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW, () => {
-            this.#resetVideoSizeSelection();
             this.#renderVideo();
             this.#renderControls();
         });
@@ -130,7 +128,6 @@ export default class CaptureControlView {
 
         CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__STOP_CAPTURING, () => {
             this.#captureControlModel.resetState();
-            this.#resetVideoSizeSelection();
             this.#renderVideo();
             this.#renderControls();
         });
@@ -183,6 +180,10 @@ export default class CaptureControlView {
         this.#disableButton(this.#$captureStart, this.#captureControlModel.isCaptureStartBtnDisabled());
         this.#disableButton(this.#$captureEnd, this.#captureControlModel.isCaptureEndBtnDisabled());
 
+        const isAutoStartDelayDisabled = this.#captureControlModel.isAutoStartDelayDisabled();
+        this.#$useAutoStart.disabled = isAutoStartDelayDisabled;
+        this.#$autoStartDelaySelection.disabled = isAutoStartDelayDisabled;
+
         const isVideoSizeSelectionDisabled = this.#captureControlModel.isVideoSizeSelectionDisabled();
         this.#$videoSizeSelection.disabled = isVideoSizeSelectionDisabled;
         this.#$videoWidth.disabled = isVideoSizeSelectionDisabled;
@@ -203,12 +204,6 @@ export default class CaptureControlView {
         }
 
         this.#renderMessageArea();
-    }
-
-    #resetVideoSizeSelection() {
-        this.#$videoSizeSelection.value = 'default';
-        this.#$videoWidth.value = '';
-        this.#$videoHeight.value = '';
     }
 
     #disableButton($button, isDisabled) {

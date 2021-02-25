@@ -56,7 +56,6 @@ export default class CaptureControlModel {
             return;
         }
         this.#state = CaptureControlState.BEFORE_PREVIEW;
-        this.#resetVideoSizeSelection();
         const canCapture = await this.#videoHandler.preview({
             width: () => this.#videoWidth,
             height: () => this.#videoHeight
@@ -80,14 +79,12 @@ export default class CaptureControlModel {
 
     resetState() {
         this.#state = CaptureControlState.BEFORE_PREVIEW;
-        this.#resetVideoSizeSelection();
     }
 
     captureEnd() {
         if (this.isCaptureEndBtnDisabled()) {
             return;
         }
-        this.#resetVideoSizeSelection();
         this.#state = CaptureControlState.BEFORE_PREVIEW;
         this.#videoHandler.stopCapturing();
     }
@@ -181,12 +178,28 @@ export default class CaptureControlModel {
         return this.#state === CaptureControlState.CAPTURING;
     }
 
+    isAutoStartDelayDisabled() {
+        return this.#isForceDisabled() || this.#state !== CaptureControlState.BEFORE_PREVIEW;
+    }
+
     isVideoSizeSelectionDisabled() {
-        return this.#isForceDisabled() || this.#state !== CaptureControlState.READY_TO_CAPTURE;
+        if (this.#isForceDisabled()) {
+            return true;
+        }
+        if (this.#useAutoStart) {
+            return this.#state !== CaptureControlState.BEFORE_PREVIEW;
+        } 
+        return this.#state === CaptureControlState.CAPTURING;
     }
 
     isVideoLengthSelectionDisabled() {
-        return this.#isForceDisabled() || this.#state === CaptureControlState.CAPTURING;
+        if (this.#isForceDisabled()) {
+            return true;
+        }
+        if (this.#useAutoStart) {
+            return this.#state !== CaptureControlState.BEFORE_PREVIEW;
+        } 
+        return this.#state === CaptureControlState.CAPTURING;
     }
 
     isVideoSizeArbitrary() {
@@ -230,13 +243,6 @@ export default class CaptureControlModel {
 
     #isForceDisabled() {
         return this.#forceDisabled;
-    }
-
-    #resetVideoSizeSelection() {
-        this.#selectedVideoSize = VIDEO_SIZE_DEFAULT;
-        this.#videoWidth = 0;
-        this.#videoHeight = 0;
-        this.#errorMessage = '';
     }
 
     #notifyStateChange() {

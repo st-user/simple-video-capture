@@ -11,6 +11,7 @@ export default class VideoHandler {
     #requestAnimationFrameId;
 
     #$baseVideo;
+    #videoInitialSize;
     #$videoCanvas;
 
     #drawImageParams;
@@ -50,10 +51,13 @@ export default class VideoHandler {
             clearTimeout(this.#resizeTimer);
             checkSourceStreamTrackResized();
 
-            this.#$videoCanvas = document.createElement('canvas');           
-            this.#$baseVideo.addEventListener('loadedmetadata', () => {
-                
+            this.#$videoCanvas = document.createElement('canvas');
+            this.#videoInitialSize = undefined;
+            this.#$baseVideo.addEventListener('loadedmetadata', () => {               
                 this.adjustVideoCanvasSize(userInputSizeSupplier.width(), userInputSizeSupplier.height());
+                if (!this.#videoInitialSize) {
+                    this.#videoInitialSize = { width: this.#$videoCanvas.width, height: this.#$videoCanvas.height };
+                }
                 const render = () => {
                     this.#drawImage();
                     this.#requestAnimationFrameId = requestAnimationFrame(render);
@@ -159,7 +163,6 @@ export default class VideoHandler {
 
         const chunks = [];
         let timer;
-        let size;
         this.#mediaRecorder.onstop = () => {
 
             if (!this.#origStream) {
@@ -181,6 +184,7 @@ export default class VideoHandler {
                 videoToCalcDuration.onseeked = () => {
                     const elapsedSeconds = videoToCalcDuration.duration;
                     const objectURL = URL.createObjectURL(blob);
+                    const size = this.#videoInitialSize;
 
                     CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__RESULT_DATA_CREATED, {
                         objectURL, elapsedSeconds, size
@@ -203,7 +207,7 @@ export default class VideoHandler {
             chunks.push(event.data);
         };
         this.#mediaRecorder.start();
-        size = { width: this.#$videoCanvas.width, height: this.#$videoCanvas.height };
+        
 
         if (0 < lengthSecond) {
             timer = setTimeout(() => {
