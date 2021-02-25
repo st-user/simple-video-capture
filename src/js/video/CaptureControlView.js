@@ -13,6 +13,7 @@ const videoInfoTemplate = data => {
 export default class CaptureControlView {
 
     #captureControlModel;
+    #mainNoticeModel;
     #explanationsModel;
     #resultModel;
 
@@ -36,8 +37,9 @@ export default class CaptureControlView {
 
     #$videoLengthSelection;
 
-    constructor(caputureControlModel, explanationsModel, resultModel) {
+    constructor(caputureControlModel, mainNoticeModel, explanationsModel, resultModel) {
         this.#captureControlModel = caputureControlModel;
+        this.#mainNoticeModel = mainNoticeModel;
         this.#explanationsModel = explanationsModel;
         this.#resultModel = resultModel;
 
@@ -69,6 +71,7 @@ export default class CaptureControlView {
             if (!this.#resultModel.confirmToClear()) {
                 return;
             }
+            this.#mainNoticeModel.changeState(false);
             this.#explanationsModel.changeState(false);
             DOM.none(this.#$previewArea);
             await this.#captureControlModel.preview();

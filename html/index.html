@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="keywords" content="video,動画,ビデオ,キャプチャー,録画,ブラウザ" />
-        <meta name="description" content="PC上のアプリケーション、モニターなどの操作を録画できるツールです。録画した動画はwebm形式でダウンロードできます。" />
+        <meta name="description" content="PC上のアプリケーション、モニターなどの操作を録画できるツールです。録画した動画はwebm形式,画像gif形式でダウンロードできます。" />
         <link rel="shortcut icon" href="favicon.ico">
         <title>簡単動画キャプチャーツール</title>
         <script src="./js/style.js?q=1.2.0"></script>
@@ -18,15 +18,6 @@
                 <h1 class="header__title">簡単動画キャプチャーツール</h1>
             </div>         
         </header>
-
-        <div class="main-notice clearfixContainer">
-            <div class="main-notice__important">
-                【重要】
-            </div>
-            <div class="main-notice__message">
-                ブラウザの他のタブを録画したい時は、この「簡単動画キャプチャーツール」のタブだけを<span class="main-notice__text is-strong">別ウィンドウで</span>開いてください
-            </div>
-        </div>
 
         <!-- controls -->
         <div class="controls">
@@ -104,6 +95,34 @@
                 </li>
             </ul>
         </div>
+
+        <!-- main-notice -->
+        <div class="main-notice">
+            <div id="windowSplitImageToggle" class="main-notice__image-toggle"></div>
+            <div id="windowSplitImageContents" class="main-notice__contents">
+                <div class="main-notice__important">
+                    【重要】
+                </div>
+                <div class="main-notice__message">
+                    ブラウザの他のタブを録画したい時は、<br/>「簡単動画キャプチャーツール」のタブだけを<span class="main-notice__text is-strong">別ウィンドウで</span>開いてください
+                    <span id="openTheReasonForMainNotice" class="main-notice__message-toggle-reason">(なぜ？)</span>
+                </div>
+                <div id="reasonForMainNotice" class="main-notice__message-reason">
+                    「簡単動画キャプチャーツール」のタブが&quot;非活性&quot;になると、動画データの処理がうまく行われなくなるためです。
+                    同一ウィンドウ上で、別タブを選択したり、ブラウザウィンドウ自体を非表示にすると、通常、タブが&quot;非活性&quot;になります。
+                </div>
+                <div class="main-notice__image-area">
+                    <div class="main-notice__image-contents">
+                        <img src="./window-split-image.gif" decoding="async" alt="イメージ"/>
+                    </div>
+                    <div>
+                        ↑このように「簡単動画キャプチャーツール」のみ、別ウィンドウに切り出します。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         <!-- explanation -->
         <div id="explanations" class="explanations">
             <div class="explanations__toggle-wrapper">

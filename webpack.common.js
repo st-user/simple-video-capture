@@ -51,7 +51,8 @@ module.exports = {
         new CopyPlugin({
             patterns: [
                 { from: './html/index.html', to: `./${PROJECT_NAME}` },
-                { from: './assets/favicon.ico', to: `./${PROJECT_NAME}` }
+                { from: './assets/favicon.ico', to: `./${PROJECT_NAME}` },
+                { from: './assets/window-split-image.gif', to: `./${PROJECT_NAME}` },
             ],
         })
     ]

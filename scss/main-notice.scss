@@ -1,10 +1,22 @@
+@import 'global';
+
 .main-notice {
     margin: auto;
     margin-bottom: 24px;
-    max-width: 600px;
-    color: #4138a1;
+    max-width: 540px;
+
+    &__image-toggle {
+        @extend %g__toggle;
+        margin: auto;
+        margin-bottom: 12px;
+    }
+
+    &__contents {
+        position: relative;
+    }
 
     &__important {
+        color: #4138a1;
         float: left;
         width: 64px;
         height: 24px;
@@ -12,14 +24,37 @@
     }
 
     &__message {
+        color: #4138a1;
         float: left;
-        max-width: 500px;
+        margin-bottom: 12px;
+        max-width: 470px;
     }
 
     &__text {
         &.is-strong {
             font-weight: bold;
-            color: #221C9F;
+            color: #221c9f;
         }
+    }
+
+    &__message-toggle-reason {
+        cursor: pointer;
+        text-decoration: underline;
+    }
+
+    &__message-reason {
+        @extend %g__shadow;
+        position: absolute;
+        top: 52px;
+        left: 0;
+        border-radius: 5px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 12px;
+        border: 1px solid #e6e4e4;
+    }
+
+    &__image-area {
+        clear: both;
+        width: 512px;
     }
 }
