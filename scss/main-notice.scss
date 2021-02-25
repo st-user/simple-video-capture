@@ -1,0 +1,26 @@
+.main-notice {
+    margin: auto;
+    margin-bottom: 24px;
+    max-width: 600px;
+    color: #4138a1;
+
+    &__important {
+        float: left;
+        width: 64px;
+        height: 24px;
+        line-height: 24px;
+    }
+
+    &__message {
+        float: left;
+        max-width: 500px;
+    }
+
+    &__text {
+        &.is-strong {
+            font-weight: bold;
+            text-decoration: underline;
+            color: #221C9F;
+        }
+    }
+}
