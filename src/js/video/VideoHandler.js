@@ -78,6 +78,10 @@ export default class VideoHandler {
         return true;
     }
 
+    isVideoInitailSizeLoaded() {
+        return !!this.#videoInitialSize;
+    }
+
     adjustVideoCanvasSize(_userInputWidth, _userInputHeight) {
         if (!this.#$baseVideo || !this.#$videoCanvas) {
             return;

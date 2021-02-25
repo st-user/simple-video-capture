@@ -230,7 +230,23 @@ export default class CaptureControlModel {
             }
             CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__COUNT_DOWN_TO_START_CAPTURING);
             if (this.#autoStartDelayCount === 0) {
-                this.captureStart();
+                const maxRetry = 50;
+                let retryCount = 0;
+                const checkThenStart = () => {
+                    if (maxRetry < retryCount) {
+                        alert('録画開始処理に失敗しました。画面をリロードし、再度実行してください。');
+                        return;
+                    }
+                    retryCount++;
+                    if (!this.#videoHandler.isVideoInitailSizeLoaded()) {
+                        console.warn(`Video is not initialized. Retry count = ${retryCount}`);
+                        setTimeout(checkThenStart, 100);
+                        return;
+                    }
+                    this.captureStart();
+                };
+                checkThenStart();
+                
                 return;
             }
             setTimeout(() => {
