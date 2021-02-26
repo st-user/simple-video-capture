@@ -188,10 +188,12 @@ export default class VideoHandler {
         if (!this.#$baseVideo || !this.#$videoCanvas || !this.#drawImageParams) {
             return false;
         }
+
         const { 
             xPadding, yPadding, videoFillWidth, videoFillHeight,
             xHidden, yHidden, videoCutWidth, videoCutHeight
         } = this.#drawImageParams;
+
         const ctx = this.#$videoCanvas.getContext('2d');
         ctx.fillColor = '#000000';
         ctx.fillRect(0, 0, this.#$videoCanvas.width, this.#$videoCanvas.height);

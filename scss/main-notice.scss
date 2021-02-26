@@ -18,9 +18,9 @@
     &__important {
         color: #4138a1;
         float: left;
-        width: 64px;
         height: 24px;
         line-height: 24px;
+        width: 64px;
     }
 
     &__message {
@@ -32,8 +32,8 @@
 
     &__text {
         &.is-strong {
-            font-weight: bold;
             color: #221c9f;
+            font-weight: bold;
         }
     }
 
@@ -44,13 +44,13 @@
 
     &__message-reason {
         @extend %g__shadow;
+        background: rgba(255, 255, 255, 0.9);
+        border: 1px solid #e6e4e4;
+        border-radius: 5px;
+        left: 0;
+        padding: 12px;
         position: absolute;
         top: 52px;
-        left: 0;
-        border-radius: 5px;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 12px;
-        border: 1px solid #e6e4e4;
     }
 
     &__image-area {
