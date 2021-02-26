@@ -34,6 +34,9 @@ export default class CaptureControlView {
     #$videoSizeInputArea;
     #$videoWidth;
     #$videoHeight;
+    #$videoSizeAdjustmentMethodArea;
+    #$videoSizeAdjustmentMethod;
+
 
     #$videoLengthSelection;
 
@@ -60,6 +63,8 @@ export default class CaptureControlView {
         this.#$videoSizeInputArea = DOM.query('#videoSizeInputArea');
         this.#$videoWidth = DOM.query('#videoWidth');
         this.#$videoHeight = DOM.query('#videoHeight');
+        this.#$videoSizeAdjustmentMethodArea = DOM.query('#videoSizeAdjustmentMethodArea');
+        this.#$videoSizeAdjustmentMethod = DOM.all('#videoSizeAdjustmentMethodArea input[name="videoSizeAdjustmentMethod"]');
 
         this.#$videoLengthSelection = DOM.query('#videoLengthSelection');
     }
@@ -102,6 +107,13 @@ export default class CaptureControlView {
             );
         };
         DOM.change(this.#$videoSizeSelection, changeVideoSize);
+
+        const changeVideoSizeAdjustmentMethod = $elem => {
+            this.#captureControlModel.setVideoSizeAdjustmentMethod($elem.value);
+        };
+        this.#$videoSizeAdjustmentMethod.forEach(
+            $elem => DOM.change($elem, () => changeVideoSizeAdjustmentMethod($elem))
+        );
 
         const changeVideoLength = () => {
             this.#captureControlModel.setVideoLength(
@@ -148,7 +160,14 @@ export default class CaptureControlView {
             this.#resizeVideo();
         }, 500));
 
+
+        changeAutoStartSetting();
         changeVideoSize();
+        this.#$videoSizeAdjustmentMethod.forEach($elem => {
+            if ($elem.checked) {
+                changeVideoSizeAdjustmentMethod($elem);
+            }    
+        });
         changeVideoLength();
         this.#renderVideo();
         this.#renderControls();
@@ -191,20 +210,13 @@ export default class CaptureControlView {
         this.#$videoSizeSelection.disabled = isVideoSizeSelectionDisabled;
         this.#$videoWidth.disabled = isVideoSizeSelectionDisabled;
         this.#$videoHeight.disabled = isVideoSizeSelectionDisabled;
+        this.#$videoSizeAdjustmentMethod.forEach($elem => $elem.disabled = isVideoSizeSelectionDisabled);
 
         this.#$videoLengthSelection.disabled = this.#captureControlModel.isVideoLengthSelectionDisabled();
 
-        if (this.#captureControlModel.isVideoSizeArbitrary()) {
-            DOM.block(this.#$videoSizeInputArea);
-        } else {
-            DOM.none(this.#$videoSizeInputArea);
-        }
-
-        if (this.#captureControlModel.isCapturing()) {
-            DOM.block(this.#$nowCapturing);
-        } else {
-            DOM.none(this.#$nowCapturing);
-        }
+        DOM.display(this.#$videoSizeInputArea, this.#captureControlModel.isVideoSizeArbitrary());
+        DOM.display(this.#$nowCapturing, this.#captureControlModel.isCapturing());
+        DOM.display(this.#$videoSizeAdjustmentMethodArea, !this.#captureControlModel.isVideoSizeDefault());
 
         this.#renderMessageArea();
     }

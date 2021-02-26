@@ -78,6 +78,14 @@ export default class DOM {
         element.style.display = 'block';
     }
 
+    static display(element, isBlock) {
+        if (isBlock) {
+            DOM.block(element);
+        } else {
+            DOM.none(element);
+        }
+    }
+
     static inlineBlock(element) {
         element.style.display = 'inline-block';
     }

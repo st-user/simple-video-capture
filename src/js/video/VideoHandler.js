@@ -54,7 +54,9 @@ export default class VideoHandler {
             this.#$videoCanvas = document.createElement('canvas');
             this.#videoInitialSize = undefined;
             this.#$baseVideo.addEventListener('loadedmetadata', () => {               
-                this.adjustVideoCanvasSize(userInputSizeSupplier.width(), userInputSizeSupplier.height());
+                this.adjustVideoCanvasSize(
+                    userInputSizeSupplier.width(), userInputSizeSupplier.height(), userInputSizeSupplier.method()
+                );
                 if (!this.#videoInitialSize) {
                     this.#videoInitialSize = { width: this.#$videoCanvas.width, height: this.#$videoCanvas.height };
                 }
@@ -82,7 +84,7 @@ export default class VideoHandler {
         return !!this.#videoInitialSize;
     }
 
-    adjustVideoCanvasSize(_userInputWidth, _userInputHeight) {
+    adjustVideoCanvasSize(_userInputWidth, _userInputHeight, method) {
         if (!this.#$baseVideo || !this.#$videoCanvas) {
             return;
         }
@@ -99,34 +101,68 @@ export default class VideoHandler {
 
         const userAspectRatio = userInputWidth / userInputHeight;
 
+
         let videoFillWidth = this.#$videoCanvas.width;
         let videoFillHeight = this.#$videoCanvas.height;
         let xPadding = 0;
         let yPadding = 0;
 
-        if (origAspectRatio < userAspectRatio) {
-            // too large width. e.g. 1200 x 600
+        if (method === 'cut') {
 
-            videoFillWidth = (canvasHeight / videoHeight) * videoWidth;
-            xPadding =  (canvasWidth - videoFillWidth) / 2;
-    
-            // console.log(`${canvasWidth}/${canvasHeight}/${videoFillWidth}/${xPadding}   -- ${videoFillWidth + xPadding * 2}`);
-    
-        } 
+            let videoCutWidth = videoWidth;
+            let videoCutHeight = videoHeight;
+            let xHidden = 0;
+            let yHidden = 0;
 
-        if (userAspectRatio < origAspectRatio) {
-            // too large height. e.g. 600 x 600
+            const wMag = userInputWidth / videoWidth;
+            const hMag = userInputHeight / videoHeight;
 
-            videoFillHeight = (canvasWidth / videoWidth) * videoHeight;
-            yPadding =  (canvasHeight - videoFillHeight) / 2;
+            if (hMag < wMag) {
+                const fullHeight = videoHeight * wMag;
+                const fullHidenHeight = fullHeight - userInputHeight;
+                yHidden = (fullHidenHeight / 2) / wMag;
+                videoCutHeight = (fullHeight - fullHidenHeight) / wMag;
+            }
+
+            if (wMag < hMag) {
+                const fullWidth = videoWidth * hMag;
+                const fullHidenWidth = fullWidth - userInputWidth;
+                xHidden = (fullHidenWidth / 2) / hMag;
+                videoCutWidth = (fullWidth - fullHidenWidth) / hMag;
+            }
+
+            this.#drawImageParams = {
+                xHidden, yHidden, videoCutWidth, videoCutHeight,
+                xPadding, yPadding, videoFillWidth, videoFillHeight
+            };
+
+        } else {
+
+            if (origAspectRatio < userAspectRatio) {
+                // too large width. e.g. 1200 x 600
     
-            // console.log(`${canvasHeight}/${canvasWidth}/${videoFillHeight}/${yPadding}   -- ${videoFillHeight + yPadding * 2}`);
+                videoFillWidth = (canvasHeight / videoHeight) * videoWidth;
+                xPadding =  (canvasWidth - videoFillWidth) / 2;
+        
+                // console.log(`${canvasWidth}/${canvasHeight}/${videoFillWidth}/${xPadding}   -- ${videoFillWidth + xPadding * 2}`);
+        
+            } 
+    
+            if (userAspectRatio < origAspectRatio) {
+                // too large height. e.g. 600 x 600
+    
+                videoFillHeight = (canvasWidth / videoWidth) * videoHeight;
+                yPadding =  (canvasHeight - videoFillHeight) / 2;
+        
+                // console.log(`${canvasHeight}/${canvasWidth}/${videoFillHeight}/${yPadding}   -- ${videoFillHeight + yPadding * 2}`);
+            }
+
+            this.#drawImageParams = {
+                xPadding, yPadding, videoFillWidth, videoFillHeight
+            };
+            
         }
 
-        this.#drawImageParams = {
-            xPadding, yPadding, videoFillWidth, videoFillHeight
-        };
-        
         const displayWidth = Math.min(window.innerWidth * 0.90, userInputWidth);
         const displayHeight = displayWidth * userInputHeight / userInputWidth;
 
@@ -152,11 +188,23 @@ export default class VideoHandler {
         if (!this.#$baseVideo || !this.#$videoCanvas || !this.#drawImageParams) {
             return false;
         }
-        const { xPadding, yPadding, videoFillWidth, videoFillHeight } = this.#drawImageParams;
+        const { 
+            xPadding, yPadding, videoFillWidth, videoFillHeight,
+            xHidden, yHidden, videoCutWidth, videoCutHeight
+        } = this.#drawImageParams;
         const ctx = this.#$videoCanvas.getContext('2d');
         ctx.fillColor = '#000000';
         ctx.fillRect(0, 0, this.#$videoCanvas.width, this.#$videoCanvas.height);
-        ctx.drawImage(this.#$baseVideo, xPadding, yPadding, videoFillWidth, videoFillHeight);
+
+        if (xHidden || yHidden) {
+            ctx.drawImage(
+                this.#$baseVideo, xHidden, yHidden, videoCutWidth, videoCutHeight,
+                xPadding, yPadding, videoFillWidth, videoFillHeight 
+            );
+        } else {
+            ctx.drawImage(this.#$baseVideo, xPadding, yPadding, videoFillWidth, videoFillHeight);
+        }
+        
 
         return true;
     }

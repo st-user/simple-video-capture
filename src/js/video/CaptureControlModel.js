@@ -29,6 +29,9 @@ export default class CaptureControlModel {
     #selectedVideoSize;
     #videoWidth;
     #videoHeight;
+
+    #videoSizeAdjustmentMethod;
+
     #videoLength;
 
     #errorMessage;
@@ -58,7 +61,8 @@ export default class CaptureControlModel {
         this.#state = CaptureControlState.BEFORE_PREVIEW;
         const canCapture = await this.#videoHandler.preview({
             width: () => this.#videoWidth,
-            height: () => this.#videoHeight
+            height: () => this.#videoHeight,
+            method: () => this.#videoSizeAdjustmentMethod
         });
 
         if (canCapture) {
@@ -89,11 +93,13 @@ export default class CaptureControlModel {
         this.#videoHandler.stopCapturing();
     }
 
+    // TODO rename to setAutoStartSetting
     changeAutoStartSetting(useAutoStart, autoStartDelay) {
         this.#useAutoStart = useAutoStart;
         this.#autoStartDelay = autoStartDelay;
     }
 
+    // TODO rename to setVideoSizeInfo
     changeVideoSize(selectedVideoSize, width, height) {
         this.#errorMessage = '';
         this.#selectedVideoSize = selectedVideoSize;
@@ -146,11 +152,16 @@ export default class CaptureControlModel {
     }
 
     adjustVideoCanvasSize() {
-        this.#videoHandler.adjustVideoCanvasSize(this.#videoWidth, this.#videoHeight);
+        this.#videoHandler.adjustVideoCanvasSize(this.#videoWidth, this.#videoHeight, this.#videoSizeAdjustmentMethod);
     }
 
     getVideoActualSize() {
         return this.#videoHandler.getVideoActualSize(this.#videoWidth, this.#videoHeight);
+    }
+
+    setVideoSizeAdjustmentMethod(method) {
+        this.#videoSizeAdjustmentMethod = method;
+        this.adjustVideoCanvasSize();
     }
 
     setVideoLength(videoLength) {
@@ -200,6 +211,10 @@ export default class CaptureControlModel {
             return this.#state !== CaptureControlState.BEFORE_PREVIEW;
         } 
         return this.#state === CaptureControlState.CAPTURING;
+    }
+
+    isVideoSizeDefault() {
+        return this.#selectedVideoSize === VIDEO_SIZE_DEFAULT;
     }
 
     isVideoSizeArbitrary() {
