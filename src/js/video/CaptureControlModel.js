@@ -241,6 +241,7 @@ export default class CaptureControlModel {
         const countDown = () => {
             if (this.#state !== CaptureControlState.READY_TO_CAPTURE) {
                 this.#autoStartDelayCount = 0;
+                CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__COUNT_DOWN_TO_START_CAPTURING);
                 return;
             }
             CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__COUNT_DOWN_TO_START_CAPTURING);

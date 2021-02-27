@@ -96,12 +96,6 @@ export default class VideoHandler {
         const userInputWidth = _size.width;
         const userInputHeight = _size.height;
 
-        // e.g. 2k screen 2560 x 1440
-        const origAspectRatio = videoWidth / videoHeight;
-
-        const userAspectRatio = userInputWidth / userInputHeight;
-
-
         let videoFillWidth = this.#$videoCanvas.width;
         let videoFillHeight = this.#$videoCanvas.height;
         let xPadding = 0;
@@ -137,6 +131,10 @@ export default class VideoHandler {
             };
 
         } else {
+            
+            // e.g. 2k screen 2560 x 1440
+            const origAspectRatio = videoWidth / videoHeight;
+            const userAspectRatio = userInputWidth / userInputHeight;
 
             if (origAspectRatio < userAspectRatio) {
                 // too large width. e.g. 1200 x 600
