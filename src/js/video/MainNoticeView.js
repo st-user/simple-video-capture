@@ -1,77 +1,36 @@
-import DOM from '../common/DOM.js';
 import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 import { CustomEventNames } from '../common/CustomEventNames.js';
 import ToggleableContentsView from './ToggleableContentsView.js';
+import HoverWindowView from './HoverWindowView.js';
 
-class ReasonModel {
+export default class MainNoticeView {
 
-    #isOpened;
-    
-    constructor() {
-        this.#isOpened = false;
-    }
-
-    open() {
-        this.#isOpened = true;
-        CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__TOGGLE_REASON_FOR_MAIN_NOTICE);
-    }
-
-    close() {
-        this.#isOpened = false;
-        CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__TOGGLE_REASON_FOR_MAIN_NOTICE);
-    }
-
-    isOpened() {
-        return this.#isOpened;
-    }
-}
-
-export default class MainNoticeView extends ToggleableContentsView{
-
-    #reasonModel;
-
-    #$openTheReasonForMainNotice;
-    #$reasonForMainNotice;
+    #windowSplitImageView;
+    #reasonView;
 
     constructor(explanationsModel) {
-        super(
+        
+        this.#windowSplitImageView = new ToggleableContentsView(
             explanationsModel,
             '#windowSplitImageToggle',
             '#windowSplitImageContents',
             CustomEventNames.SIMPLE_VIDEO_CAPTURE__TOGGLE_WINDOW_SPLIT_IMAGE,
             'イメージ'
         );
-        this.#reasonModel = new ReasonModel();
-        this.#$openTheReasonForMainNotice = DOM.query('#openTheReasonForMainNotice');
-        this.#$reasonForMainNotice = DOM.query('#reasonForMainNotice');
+
+        this.#reasonView = new HoverWindowView(
+            CustomEventNames.SIMPLE_VIDEO_CAPTURE__TOGGLE_REASON_FOR_MAIN_NOTICE,
+            '#openTheReasonForMainNotice',
+            '#reasonForMainNotice'
+        );
+
     }
 
-    setUpEventSpecific() {
-        DOM.click(this.#$openTheReasonForMainNotice, event => {
-            event.stopPropagation();
-            this.#reasonModel.open();
-        });
-
-        window.addEventListener('click', () => {
-            this.#reasonModel.close();
-        });
-
+    setUpEvent() {
         CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW, () => {
-            this.render();
+            this.#windowSplitImageView.render();
         });
-
-        CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__TOGGLE_REASON_FOR_MAIN_NOTICE, () => {
-            this.#renderReasonForMainNotice();        
-        });
-
-        this.#renderReasonForMainNotice();
-    }
-
-    #renderReasonForMainNotice() {
-        if (this.#reasonModel.isOpened()) {
-            DOM.block(this.#$reasonForMainNotice);
-        } else {
-            DOM.none(this.#$reasonForMainNotice);
-        }
+        this.#windowSplitImageView.setUpEvent();
+        this.#reasonView.setUpEvent();
     }
 }

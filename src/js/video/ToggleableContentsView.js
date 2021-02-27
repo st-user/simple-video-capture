@@ -35,11 +35,7 @@ export default class ToggleableContentsView {
 
         this.render();
 
-        this.setUpEventSpecific();
     }
-
-    /* implements at subclasses */
-    setUpEventSpecific() {}
 
     render() {
         if (this.#toggleableModel.isOpen()) {
@@ -49,9 +45,5 @@ export default class ToggleableContentsView {
             this.#$toggle.textContent = `${this.#contentsName}を開く`;
             DOM.none(this.#$contents);
         }
-        this.renderSpecific();
     }
-
-    /* implements at subclasses */
-    renderSpecific() {}
 }

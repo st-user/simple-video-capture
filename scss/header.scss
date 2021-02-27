@@ -1,16 +1,18 @@
+@import "global";
 
 .header {
-    margin-bottom: 24px;
+    margin-bottom: 12px;
 
     &__content {
         margin: auto;
-        max-width: 540px;
+        width: 540px;
         position: relative;
     }
 
     &__logo {
         background-image: url('../assets/logo.png');
         background-size: contain;
+        display: block;
         float: left;
         height: 32px;
         margin: 16px 32px 0 0;
@@ -51,5 +53,32 @@
         100% {
             transform: scale(1);
         }
+    }
+
+    &__btn-show-explanations-wrapper {
+        float: left;
+        margin-left: 12px;
+    }
+
+    &__btn-show-explanations {
+        @extend %g__shadow;
+        background-color: #54636e;
+        border-radius: 50%;
+        color: #fff;
+        cursor: pointer;
+        font-weight: bold;
+        height: 24px;
+        line-height: 1.5;
+        position: absolute;
+        text-align: center;
+        top: 20px;
+        width: 24px;
+    }
+
+    &__remark-about-browser {
+        font-size: 12px;
+        margin: auto;
+        margin-bottom: 36px;
+        max-width: 540px;
     }
 }

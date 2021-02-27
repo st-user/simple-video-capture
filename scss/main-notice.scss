@@ -3,7 +3,7 @@
 .main-notice {
     margin: auto;
     margin-bottom: 24px;
-    max-width: 540px;
+    width: 540px;
 
     &__image-toggle {
         @extend %g__toggle;

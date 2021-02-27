@@ -1,22 +1,20 @@
-import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 import { CustomEventNames } from '../common/CustomEventNames.js';
-import ToggleableContentsView from './ToggleableContentsView.js';
+import HoverWindowView from './HoverWindowView.js';
 
-export default class ExplanationsView extends ToggleableContentsView{
+export default class ExplanationsView {
 
-    constructor(explanationsModel) {
-        super(
-            explanationsModel,
-            '#explanationsToggle',
-            '#explanationsContents',
+    #view;
+
+    constructor() {
+        this.#view = new HoverWindowView(
             CustomEventNames.SIMPLE_VIDEO_CAPTURE__TOGGLE_EXPLANATIONS,
-            '説明文'
+            '#showExplanations',
+            '#explanations'
         );
     }
 
-    setUpEventSpecific() {
-        CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW, () => {
-            this.render();
-        });
+    setUpEvent() {
+        this.#view.setUpEvent();
     }
+
 }

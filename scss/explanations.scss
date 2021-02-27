@@ -1,28 +1,19 @@
 @import 'global';
 
 .explanations {
-    margin: auto;
-    margin-bottom: 24px;
-    max-width: 960px;
-    padding: 0 24px;
-
-
-    &__toggle-wrapper {
-        margin: auto;
-        max-width: 540px;
-    }
-
-    &__toggle {
-        @extend %g__toggle;
-        margin: auto;
-        margin-bottom: 12px;
-    }    
-
-    &__contents {
-        list-style: disc;
-    }
+    @extend %g__shadow;
+    background-color: #fff;
+    border-radius: 4px;
+    box-shadow: 3px 3px 3px 3px rgba(0, 0, 0, 0.2);
+    left: 10%;
+    list-style: disc;
+    padding: 24px 24px 24px 36px;
+    position: absolute;
+    top: 64px;
+    width: 80%;
+    z-index: 100;
 
     &__li {
-        margin-bottom: 6px;
+        line-height: 1.5;
     }
 }
