@@ -1,12 +1,12 @@
-@import "global";
+@import 'global';
 
 .header {
     margin-bottom: 12px;
 
     &__content {
         margin: auto;
-        width: 540px;
         position: relative;
+        width: 540px;
     }
 
     &__logo {
