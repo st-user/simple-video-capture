@@ -6,6 +6,8 @@ const PLAYING_TYPE = {
     NONE: 0, WEBM: 1, GIF: 2 
 };
 
+const MOVIE_GIF_LENGTH_MAX = 30;
+
 export default class ResultModel {
 
     #objectURL;
@@ -31,8 +33,8 @@ export default class ResultModel {
     setResult(objectURL, elapsedSeconds, size) {
         this.#objectURL = objectURL;
         this.#webmLength = Math.max(1, Math.round(elapsedSeconds));
-        this.#movieGifLengthMax = Math.min(10, this.#webmLength);
-        this.#movieGifLength = this.#movieGifLengthMax;
+        this.#movieGifLengthMax = Math.min(MOVIE_GIF_LENGTH_MAX, this.#webmLength);
+        this.#movieGifLength = Math.min(10, this.#movieGifLengthMax);
         this.#webmSize = size;
     }
 
@@ -74,7 +76,7 @@ export default class ResultModel {
         this.#nowCreatingMovieGif = false;
         this.#filenameWithoutExt = 'capture';
         this.#movieGifSizeScale = 1;
-        this.#movieGifLengthMax = 10;
+        this.#movieGifLengthMax = MOVIE_GIF_LENGTH_MAX;
         this.#movieGifLength = this.#movieGifLengthMax;
     }
 
@@ -174,10 +176,10 @@ export default class ResultModel {
 
     createMovieGif() {
         if (this.isMovieControlDisabled()) {
-            return;
+            return false;
         }
-        if(!confirm('画像gifの作成には数秒から数十秒ほど時間がかかり、PCにそれなりの負荷がかかります。画像gifを作成してもよろしいですか？')) {
-            return;
+        if(!confirm('画像gifの作成には数秒から数十秒ほど時間がかかり、PCにそれなりの負荷がかかります。サイズを大きくするのであれば時間を短くし、時間を長くするのであればサイズを小さくすることをお勧めします。サイズ、時間ともに大きくし、負荷がかかりすぎるとブラウザが異常終了する可能性があります。画像gifを作成してもよろしいですか？')) {
+            return false;
         }
         this.#nowCreatingMovieGif = true;
         const size = this.getMovieGifSizeAttr();
@@ -203,6 +205,8 @@ export default class ResultModel {
         });
 
         CommonEventDispatcher.dispatch(CustomEventNames.SIMPLE_VIDEO_CAPTURE__RESULT_AREA_STATE_CHANGE);
+
+        return true;
     }
 
     recreateMovieGif() {

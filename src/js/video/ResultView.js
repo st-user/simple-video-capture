@@ -111,8 +111,9 @@ export default class ResultView {
         DOM.click(this.#$createResultMovieGif, event => {
             event.preventDefault();
             if (!this.#resultModel.isMovieControlDisabled()) {
-                this.#captureControlModel.setForceDisabled(true);
-                this.#resultModel.createMovieGif();
+                if (this.#resultModel.createMovieGif()) {
+                    this.#captureControlModel.setForceDisabled(true);
+                }
             }
         });
 
