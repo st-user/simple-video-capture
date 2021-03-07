@@ -1,11 +1,5 @@
 import { CustomEventNames } from '../common/CustomEventNames.js';
 import { CommonEventDispatcher, InputCheck } from 'vncho-lib';
-const { 
-    checkAll, 
-    checkIfInputValueEmpty, 
-    checkIfInputValueMatchesRegExp,
-    checkIfIntegerGreaterEqual
-} = InputCheck;
 
 import { CaptureControlState, VideoSizeDef } from './CaptureControlConst.js';
 import VideoHandler from './VideoHandler.js';
@@ -120,12 +114,12 @@ export default class CaptureControlModel {
         case VIDEO_SIZE_ARBITRARY: {
             // error check
             const errorCheck = inputValue => {
-                return checkAll(
+                return InputCheck.checkAll(
                     inputValue,
                     [
-                        checkIfInputValueEmpty(sizeEmptyErrorMessage),
-                        checkIfInputValueMatchesRegExp(sizeRegExp, sizeFormatErrorMessage, true),
-                        checkIfIntegerGreaterEqual(1, sizeFormatErrorMessage)
+                        InputCheck.checkIfInputValueEmpty(sizeEmptyErrorMessage),
+                        InputCheck.checkIfInputValueMatchesRegExp(sizeRegExp, sizeFormatErrorMessage, true),
+                        InputCheck.checkIfIntegerGreaterEqual(1, sizeFormatErrorMessage)
                     ]
                 );
             };

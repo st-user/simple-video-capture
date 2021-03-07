@@ -1,8 +1,7 @@
 import { CustomEventNamesFactory } from 'vncho-lib';
-const { createNames } = CustomEventNamesFactory;
 
-const CustomEventNames = createNames();
-const CustomEventContextNames = createNames();
+const CustomEventNames = CustomEventNamesFactory.createNames();
+const CustomEventContextNames = CustomEventNamesFactory.createNames();
 
 CustomEventNames
     .set('SIMPLE_VIDEO_CAPTURE__CONTROL_STATE_CHANGE', 'simple-video-capture/control-state-change')

@@ -13,7 +13,6 @@ export default class CaptureControlView {
 
     #captureControlModel;
     #mainNoticeModel;
-    #explanationsModel;
     #resultModel;
 
     #$preview;
@@ -39,10 +38,9 @@ export default class CaptureControlView {
 
     #$videoLengthSelection;
 
-    constructor(caputureControlModel, mainNoticeModel, explanationsModel, resultModel) {
+    constructor(caputureControlModel, mainNoticeModel, resultModel) {
         this.#captureControlModel = caputureControlModel;
         this.#mainNoticeModel = mainNoticeModel;
-        this.#explanationsModel = explanationsModel;
         this.#resultModel = resultModel;
 
         this.#$preview = DOM.query('#preview');
@@ -75,8 +73,7 @@ export default class CaptureControlView {
             if (!this.#resultModel.confirmToClear()) {
                 return;
             }
-            this.#mainNoticeModel.changeState(false);
-            this.#explanationsModel.changeState(false);
+            this.#mainNoticeModel.setValue(false);
             DOM.none(this.#$previewArea);
             await this.#captureControlModel.preview();
         });

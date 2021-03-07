@@ -1,5 +1,6 @@
-import { HeaderView, ExplanationsModel, ExplanationsView } from 'vncho-lib';
+import { HeaderView, ExplanationsView } from 'vncho-lib';
 
+import { CustomEventNames } from './common/CustomEventNames.js';
 import CaptureControlModel from './video/CaptureControlModel.js';
 import CaptureControlView from './video/CaptureControlView.js';
 import MainNoticeModel from './video/MainNoticeModel.js';
@@ -14,21 +15,24 @@ const headerConfig  = {
     これら意外のブラウザでは動作しない可能性があります。`
 };
 
+const expanationsConfig = {
+    eventName: CustomEventNames.SIMPLE_VIDEO_CAPTURE__TOGGLE_EXPLANATIONS
+};
+
 export default function main() {
 
     const mainNoticeModel = new MainNoticeModel();
     const captureControlModel = new CaptureControlModel();
-    const explanationsModel = new ExplanationsModel();
     const resultModel = new ResultModel();
 
     new HeaderView(headerConfig);
 
     const captureControlView = new CaptureControlView(
-        captureControlModel, mainNoticeModel, explanationsModel, resultModel
+        captureControlModel, mainNoticeModel, resultModel
     );
     captureControlView.setUpEvents();
 
-    new ExplanationsView(explanationsModel).setUpEvents();
+    new ExplanationsView(expanationsConfig).setUpEvents();
     new MainNoticeView(mainNoticeModel).setUpEvents();
     new ResultView(resultModel, captureControlModel).setUpEvents();
 }

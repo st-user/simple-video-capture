@@ -6,10 +6,10 @@ export default class MainNoticeView {
     #windowSplitImageView;
     #reasonView;
 
-    constructor(explanationsModel) {
+    constructor(mainNoticeModel) {
         
         this.#windowSplitImageView = new ToggleableContentsView(
-            explanationsModel,
+            mainNoticeModel,
             '#windowSplitImageToggle',
             '#windowSplitImageContents',
             CustomEventNames.SIMPLE_VIDEO_CAPTURE__TOGGLE_WINDOW_SPLIT_IMAGE,
