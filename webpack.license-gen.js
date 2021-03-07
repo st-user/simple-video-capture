@@ -15,7 +15,10 @@ module.exports = merge(common, {
     },
     plugins: [
         new LicensePlugin({
-            excludedPackageTest: () => {
+            excludedPackageTest: (packageName) => {
+                if (packageName.startsWith('vncho-lib')) {
+                    return true;
+                }
                 return false;
             },
             outputFilename: `../dist/${PROJECT_NAME}/oss-licenses.json`

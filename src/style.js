@@ -1,3 +1,5 @@
+/*! For license information please see https://www.ajizablg.com/simple-video-capture/oss-licenses.json */
+
 import '../scss-dest/default.css';
 import '../scss-dest/main.css';
 import '../scss-dest/reset.css';
