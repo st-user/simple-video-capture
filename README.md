@@ -8,7 +8,15 @@ PC上のアプリケーション、モニターなどの操作を録画できる
 - [Node.js](https://nodejs.org/ja/)をインストールしてください
 
 ### 手順
+別リポジトリ[vncho-lib](https://github.com/st-user/vncho-lib)の共通ライブラリに依存しているので、その共通ライブラリを先にクローンしてから、ビルドします。
+
 ```
+git clone https://github.com/st-user/vncho-lib.git
+cd vncho-lib
+npm install
+npm run build-css
+cd ../
+
 git clone https://github.com/st-user/simple-video-capture.git
 cd simple-video-capture
 npm install
