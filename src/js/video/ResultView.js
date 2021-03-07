@@ -1,8 +1,5 @@
-import debounce from '../common/Debounce.js';
-import DOM from '../common/DOM.js';
+import { debounce, DOM, CommonEventDispatcher } from 'vncho-lib';
 import { CustomEventNames } from '../common/CustomEventNames.js';
-import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
-
 
 const mediaPropertiesTextTemplate = data => {
     const { width, height, length } = data;
@@ -83,7 +80,7 @@ export default class ResultView {
         this.#$playResultVideoAreaTitle = DOM.query('#playResultVideoAreaTitle');
     }
 
-    setUpEvent() {
+    setUpEvents() {
 
         DOM.click(this.#$downloadLinkWebm, event => {
             if (this.#resultModel.isWebmControlDisabled()) {

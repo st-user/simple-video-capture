@@ -1,7 +1,5 @@
-import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
+import { CommonEventDispatcher, ToggleableContentsView, HoverWindowView } from 'vncho-lib';
 import { CustomEventNames } from '../common/CustomEventNames.js';
-import ToggleableContentsView from './ToggleableContentsView.js';
-import HoverWindowView from './HoverWindowView.js';
 
 export default class MainNoticeView {
 
@@ -26,11 +24,11 @@ export default class MainNoticeView {
 
     }
 
-    setUpEvent() {
+    setUpEvents() {
         CommonEventDispatcher.on(CustomEventNames.SIMPLE_VIDEO_CAPTURE__START_PREVIEW, () => {
             this.#windowSplitImageView.render();
         });
-        this.#windowSplitImageView.setUpEvent();
-        this.#reasonView.setUpEvent();
+        this.#windowSplitImageView.setUpEvents();
+        this.#reasonView.setUpEvents();
     }
 }

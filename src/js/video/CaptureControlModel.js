@@ -1,13 +1,15 @@
-import { CaptureControlState, VideoSizeDef } from './CaptureControlConst.js';
 import { CustomEventNames } from '../common/CustomEventNames.js';
-import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
-import VideoHandler from './VideoHandler.js';
-import { 
+import { CommonEventDispatcher, InputCheck } from 'vncho-lib';
+const { 
     checkAll, 
     checkIfInputValueEmpty, 
     checkIfInputValueMatchesRegExp,
     checkIfIntegerGreaterEqual
-} from '../common/InputCheck.js';
+} = InputCheck;
+
+import { CaptureControlState, VideoSizeDef } from './CaptureControlConst.js';
+import VideoHandler from './VideoHandler.js';
+
 
 
 const sizeRegExp = /^\d+$/;

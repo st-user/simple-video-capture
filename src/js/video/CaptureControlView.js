@@ -1,8 +1,7 @@
+import { CommonEventDispatcher, DOM, debounce }  from 'vncho-lib';
+
 import { MessageType } from './CaptureControlConst.js';
-import DOM from '../common/DOM.js';
-import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 import { CustomEventNames } from '../common/CustomEventNames.js';
-import debounce from '../common/Debounce.js';
 
 const videoInfoTemplate = data => {
     return `
@@ -69,7 +68,7 @@ export default class CaptureControlView {
         this.#$videoLengthSelection = DOM.query('#videoLengthSelection');
     }
 
-    setUpEvent() {
+    setUpEvents() {
 
         DOM.click(this.#$preview, async event => {
             event.preventDefault();

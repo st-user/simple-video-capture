@@ -1,5 +1,5 @@
 import { CustomEventNames } from '../common/CustomEventNames.js';
-import ToggleableContentsModel from './ToggleableContentsModel.js';
+import { ToggleableContentsModel } from 'vncho-lib';
 
 export default class MainNoticeModel extends ToggleableContentsModel {
     constructor() {

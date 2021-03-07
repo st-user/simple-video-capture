@@ -1,5 +1,6 @@
+import { CommonEventDispatcher } from 'vncho-lib';
+
 import { CustomEventNames } from '../common/CustomEventNames.js';
-import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 const gifshot = require('gifshot');
 
 const PLAYING_TYPE = {

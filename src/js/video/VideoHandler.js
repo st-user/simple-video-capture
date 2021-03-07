@@ -1,5 +1,5 @@
+import { CommonEventDispatcher } from 'vncho-lib';
 import { CustomEventNames } from '../common/CustomEventNames.js';
-import CommonEventDispatcher from '../common/CommonEventDispatcher.js';
 
 const CHECH_IF_SOURCE_STREAM_TRACK_RESIZED_INTERVAL = 300;
 
