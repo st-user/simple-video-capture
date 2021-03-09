@@ -1,7 +1,7 @@
 # simple-video-capture
 PC上のアプリケーション、モニターなどの操作を録画できるツールです。録画した動画はwebm形式でダウンロードできます。
 
-サイト→https://tools.ajizablg.com/simple-video-capture/index.html
+サイト→https://www.ajizablg.com/simple-video-capture/index.html
 
 ## ビルド方法
 ### 前提
