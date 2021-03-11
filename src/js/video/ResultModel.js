@@ -34,8 +34,9 @@ export default class ResultModel {
     setResult(objectURL, elapsedSeconds, size) {
         this.#objectURL = objectURL;
         this.#webmLength = Math.max(1, Math.round(elapsedSeconds));
-        this.#movieGifLengthMax = Math.min(MOVIE_GIF_LENGTH_MAX, this.#webmLength);
-        this.#movieGifLength = Math.min(10, this.#movieGifLengthMax);
+        const { movieGifLengthMax, movieGifLength } = this.#calclMovieGifLengths();
+        this.#movieGifLengthMax = movieGifLengthMax;
+        this.#movieGifLength = movieGifLength;
         this.#webmSize = size;
     }
 
@@ -77,8 +78,15 @@ export default class ResultModel {
         this.#nowCreatingMovieGif = false;
         this.#filenameWithoutExt = 'capture';
         this.#movieGifSizeScale = 1;
-        this.#movieGifLengthMax = MOVIE_GIF_LENGTH_MAX;
-        this.#movieGifLength = this.#movieGifLengthMax;
+        const { movieGifLengthMax, movieGifLength } = this.#calclMovieGifLengths();
+        this.#movieGifLengthMax = movieGifLengthMax;
+        this.#movieGifLength = movieGifLength;
+    }
+
+    #calclMovieGifLengths() {
+        const movieGifLengthMax = Math.min(MOVIE_GIF_LENGTH_MAX, this.#webmLength);
+        const movieGifLength = Math.min(10, movieGifLengthMax);
+        return { movieGifLengthMax, movieGifLength};
     }
 
     resultExists() {
